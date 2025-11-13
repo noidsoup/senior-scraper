@@ -1,0 +1,46 @@
+{
+  "duplicates": {
+    "title_duplicates": 510,
+    "address_duplicates": 733,
+    "true_duplicates": 0,
+    "unique_titles": 4479,
+    "unique_addresses": 4390,
+    "total_listings": 4759
+  },
+  "data_quality": {
+    "ID": {
+      "missing": "0",
+      "percentage": 0.0
+    },
+    "Title": {
+      "missing": "0",
+      "percentage": 0.0
+    },
+    "address": {
+      "missing": "0",
+      "percentage": 0.0
+    },
+    "website": {
+      "missing": "0",
+      "percentage": 0.0
+    }
+  },
+  "care_types": {
+    "type": "4759",
+    "_type": "4759"
+  },
+  "urls": {
+    "total_urls": 4759,
+    "valid_urls": 4759,
+    "seniorplace_urls": 3281,
+    "seniorly_urls": 1478,
+    "external_urls": 0,
+    "invalid_urls": 0
+  },
+  "api": {
+    "Posts": "success",
+    "Listings": "success",
+    "Categories": "success",
+    "Pages": "success"
+  }
+}

@@ -1,0 +1,40 @@
+
+# WordPress Duplicate Deletion Instructions
+
+You have 4 options to delete the 27 duplicate listings from WordPress:
+
+## Option 1: WP All Import (EASIEST)
+1. File: DELETE_DUPLICATES_WP_IMPORT.csv
+2. In WordPress Admin → All Import → Create New Import
+3. Upload the CSV file
+4. Map: ID → Post ID, Status → Post Status
+5. Set to "Update existing posts" matching by ID
+6. Run import - this will move all duplicates to trash
+
+## Option 2: WP-CLI (COMMAND LINE)
+1. File: DELETE_WORDPRESS_DUPLICATES_WPCLI.sh
+2. Upload to your WordPress root directory
+3. SSH to your server
+4. Run: chmod +x DELETE_WORDPRESS_DUPLICATES_WPCLI.sh
+5. Run: ./DELETE_WORDPRESS_DUPLICATES_WPCLI.sh
+
+## Option 3: Direct SQL (ADVANCED - BACKUP FIRST!)
+1. File: DELETE_WORDPRESS_DUPLICATES.sql
+2. Backup your WordPress database first!
+3. Run SQL commands in phpMyAdmin or similar
+4. This permanently deletes posts and all associated data
+
+## Option 4: PHP Script (UPLOAD TO WP)
+1. File: DELETE_WORDPRESS_DUPLICATES.php
+2. Upload to your WordPress site
+3. Visit the file in browser or run via PHP CLI
+4. Permanently deletes the duplicate posts
+
+## RECOMMENDATION: Use Option 1 (WP All Import)
+- Safest method (moves to trash instead of permanent deletion)
+- Easy to undo if needed
+- Uses familiar WordPress interface
+- No server access required
+
+## IDs to be deleted:
+13314, 11011, 10634, 10636, 13965, 10897, 13586, 12706, 9000, 14251, 10670, 14773, 13751, 9789, 10434, 10436, 10312, 8781, 10702, 14678, 13399, 10993, 7409, 10353, 10356, 12661, 14458

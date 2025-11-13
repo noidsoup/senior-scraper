@@ -1,0 +1,75 @@
+LISTINGS WITHOUT CARE TYPES (18 total)
+================================================================================
+
+1. 113 North Senior Care Center
+   Address: 113 NORTH AVENIDA DE SAN RAMON, Tucson, AZ 85710
+   URL: https://app.seniorplace.com/communities/show/6abadb36-0cff-4931-a9ca-154f27c5795e
+
+2. 55 Resort Apartments Scottsdale
+   Address: 9449 N. 90th St, Scottsdale, AZ 85258
+   URL: https://app.seniorplace.com/communities/show/e810e0a2-c64d-4426-b851-348e70eed613
+
+3. 55 Resorts Scottsdale at Mccormick Ranch
+   Address: 9449 N 90th ST, Scottsdal, AZ 85258
+   URL: https://app.seniorplace.com/communities/show/6dcc1e50-901d-49e5-84d3-5715e4f26184
+
+4. A Paradise for Parents 2; "Parents Paradise and Care"
+   Address: 18175 W. Banff Ln, Surprise, AZ 85388
+   URL: https://app.seniorplace.com/communities/show/c3ed2b0e-5eb0-4f94-be7a-f42b727fd49c
+
+5. Abc Independent Living
+   Address: 2725 E Mine Creek Rd, Peoria, AZ
+   URL: https://app.seniorplace.com/communities/show/e13ea42e-d900-4a16-ab87-7b8c7a652a8b
+
+6. Aberdeen Home
+   Address: 10639 North Aberdeen Road, Scottsdale, AZ 85254
+   URL: https://app.seniorplace.com/communities/show/656a6033-9869-46fa-9e10-f7ca5ae8989e
+
+7. Aegis at Cassia
+   Address: 1466 E Cassia Lane, Gilbert, AZ
+   URL: https://app.seniorplace.com/communities/show/31c686bc-1121-4788-9740-8e85da5708ba
+
+8. All Seasons Oro Valley - Does Not Work With Placement
+   Address: 1734 East Innovation Park, Oro Valley, AZ 85755
+   URL: https://app.seniorplace.com/communities/show/46cdb9e0-c893-46eb-ac89-49f2a417c327
+
+9. American Dream Home Ii
+   Address: 29192 N. 76th St, Scottsdale, AZ 85266
+   URL: https://app.seniorplace.com/communities/show/48602d15-be73-4199-9307-c618ecc82531
+
+10. Anna'S Carehome
+   Address: 4315 West Earll Drive, Phoenix, AZ 85031
+   URL: https://app.seniorplace.com/communities/show/26f27e80-0e35-466f-8f2e-faf32c41c1d3
+
+11. Audrey'S Adult Care Home
+   Address: 1898 East Ellis, Tempe, AZ 852824807778241
+   URL: https://app.seniorplace.com/communities/show/2b6fd48c-7e3a-4285-8695-fd3acb2c123e
+
+12. Az Ohana Care Home 3
+   Address: 2913 E Indigo Pl, Chandler, AZ
+   URL: https://app.seniorplace.com/communities/show/b9a488b1-6890-4592-b98e-e76323787127
+
+13. Beehive Homes of Arrowhead
+   Address: 17202 N. 69th Ave., Glendale, AZ 85308
+   URL: https://app.seniorplace.com/communities/show/410b9f04-f9cb-4ae4-bde8-04cfcc2f0912
+
+14. Bridgewater Assisted Living
+   Address: 295 E. Van Buren St, Avondale, AZ 85323
+   URL: https://app.seniorplace.com/communities/show/9ce5d2b7-697a-45cd-979c-1f81349645c3
+
+15. Bridgewater Assisted Living
+   Address: 295 E Van Buren St, Avondale, AZ 85323
+   URL: https://app.seniorplace.com/communities/show/0df4b123-ec93-4781-8619-2b1cb1ae884e
+
+16. Brookings Senior Living
+   Address: 7943 E Gazelle Rd, Prescott Valley, AZ 86315
+   URL: https://app.seniorplace.com/communities/show/8d7231cf-22e5-48cb-8cf2-28f8e2549c94
+
+17. By Your Side Assisted Living on Royal Palm
+   Address: 1329 S. Royal Palm Rd., Apache Junction, AZ 85119
+   URL: https://app.seniorplace.com/communities/show/b04a1fef-5f40-497e-a4f2-65c79381614a
+
+18. Calini'S Assisted
+   Address: 10610 N 84th St, Scottsdale, AZ 85260
+   URL: https://app.seniorplace.com/communities/show/575a9eba-ea26-49c0-9a6d-84f5eae9d10f
+

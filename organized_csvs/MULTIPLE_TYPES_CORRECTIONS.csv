@@ -1,0 +1,472 @@
+ID,Title,type,normalized_types,senior_place_types,correction_reason
+,A Family Affair Alh,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Abbington Senior Living,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Abes Touching Hearts Al,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Aberdeen Home,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Acacia Health Center,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,Acoya Scottsdale At Troon,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,Acoya Shea,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Aegis At Cassia,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Alta Mesa Health And Rehabilitation,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,Alta Vista Senior Living Community,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,American Dream Home,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Board And Care Home, Memory Care","Updated to include ALL types: Assisted Living Home, Board And Care Home, Memory Care"
+,American Dream Home Ii,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Board And Care Home, Memory Care","Updated to include ALL types: Assisted Living Home, Board And Care Home, Memory Care"
+,American Groves Senior Living Lp,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,American Orchards Senior Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Andara Senior Living,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Arbor Ridge,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Arbor Rose Senior Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Arizona Assisted Living And Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Arizona Assisted Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Arizona Assisted Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Arizona Pioneers Home,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living, Nursing Home","Updated to include ALL types: Assisted Living Home, Independent Living, Nursing Home"
+,Arroyo Gardens Independent And Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Asov Borrower,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Assisted Livings At Lifestream,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Ativo Senior Living Of Yuma,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Ativo Senior Living Prescott Valley,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Audreys Adult Care Home,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Aurora Place,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avanti Senior Living At Peoria,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Evergreen Village Assisted Living Prescott,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,Avista Senior Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living Apache Junction,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living Evergreen Senior Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living Lake Havasu,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living Payson,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living North Mountain,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living Yuma,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living Historic Downtown Mesa,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Sun City West Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Az Assisted Living Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Az Ohana Care Home 3,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Azalea Villa Assisted Living Center,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Barton House I,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Barton House Ii,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Barton House Ii,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Beatitudes Campus,a:4:{i:0;i:162;i:1;i:5;i:2;i:6;i:3;i:3;},"Assisted Living Home, Assisted Living Community, Independent Living, Memory Care","Assisted Living Home, Continuing Care Retirement Community, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community, Independent Living, Memory Care"
+,Bee Hive Homes,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bee Hive Homes Of Arrowhead,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Beehive Homes Of Page Elk Rd,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Beehive Homes Of Sierra Vista,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Bella Vita Health And Rehabilitation Center,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Belmont Village Scottsdale,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Bethesda Gardens Phoenix,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Bethesda,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Bridgewater Assisted Living,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Bridgewater Assisted Living,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Bridgewater Assisted Livingmidtown,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Bridgewater La Cholla Operations,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Broadway Proper Senior Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Brookdale Camino Del Sol,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Brookdale North Glendale,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Brookdale Santa Catalina,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,Brookdale Tanque Verde,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Brookdale Tempe,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Brookdale Trail Ridge,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Brookdale Union Hills,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,By Your Side Assisted Living On Royal Palm,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Canyon Winds Retirement,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Carefree Assisted Living Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Carriage House On West Garden Lane,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Casas Adobes Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Cave Creek Assisted Living And Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Cedar Care At Lagos Vistoso,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Cerbat Guest Home,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Chandler Post Acute And Rehabilitation,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Chaparral Winds Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Christian Care Assisted Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care, Nursing Home","Updated to include ALL types: Assisted Living Home, Memory Care, Nursing Home"
+,Christian Care Nursing Center,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,Cimarron Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Circles Of Life Residential Care And Memory Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Claremont Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Clearwater Agritopia,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Clearwater Ahwatukee,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Clearwater Mayo Blvd,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Clearwater Pinnacle Peak,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Dahlia Assisted Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Davis Place Senior Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Dementia Campus Assisted Living Center,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Desert Jewel At Orange Tree,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Desert Marigold Senior Living Of Tempe,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Desert Palm At The Park,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Devon Gables Rehabilitation Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Doctors Choice Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Elmer Place For Parents Simple Living Home Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Emerald Glen Memory Care Plus,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Everlasting Services At Estrella Centerbrain Injuries Only,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Faith Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Fellowship Square Christian Care Manor Iv,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Fellowship Square Historic Mesa,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Fellowship Square Phoenix,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Fellowship Squaremesa,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Fountain Assisted Living Center,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Fountain View Village,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Freedom Plaza Care Center,a:1:{i:0;i:5;},Assisted Living Community,Continuing Care Retirement Community,Updated to include ALL types: Continuing Care Retirement Community
+,Friendship Village Of Tempe,a:3:{i:0;i:162;i:1;i:5;i:2;i:3;},"Assisted Living Home, Assisted Living Community, Memory Care","Assisted Living Home, Continuing Care Retirement Community, Memory Care","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community, Memory Care"
+,Garden Ridge,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,Gardens At Ocotillo Senior Livingspectrum Retirement,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Gardens Care Scottsdale Formally Truewood By Merrill Gardens,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Garnet Of Casa Grande Assisted Living Community,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Glassford Place Senior Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Glencroft Center For Modern Aging,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Golden Care Ach,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Golden Care For Elderly,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Golden Care Living Home,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Golden Eagle Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Golden Touch Home Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Good Samaritan Societyprescott Valley,a:1:{i:0;i:5;},Assisted Living Community,Continuing Care Retirement Community,Updated to include ALL types: Continuing Care Retirement Community
+,Grace Hospice And Palliative Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Grand Court Of Mesa,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Granite Gate Senior Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Hacienda At The River,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Hacienda At The Canyon,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Hacienda Del Rey,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Handmaker Home For The Aging,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,Harvest At Queen Creek,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Haven Health Prescott Alf,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Haven Of Camp Verde,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Haven Of Show Low,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Haven Springs At North Phoenix,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Hawthorn Court At Ahwatukee,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Heaven Care Residential,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Heritage Lane Behavioral East,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Heritage Lane Behavioral West,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Heritage Legacy,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Heritage Village Assisted Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Highgate Flagstaff,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Holbrook Senior Center Extended Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Holistic Home Paradise Cove,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Holmlund Assisted Living Suites At La Posada,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Honeymilk Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,House Of Prayer,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Huger Mercy Living Center,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Hummingbird Senior Resort Living,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Immanuel Campus Of Care,a:1:{i:0;i:5;},Assisted Living Community,Continuing Care Retirement Community,Updated to include ALL types: Continuing Care Retirement Community
+,Immanuel Campus Of Care,a:1:{i:0;i:5;},Assisted Living Community,Continuing Care Retirement Community,Updated to include ALL types: Continuing Care Retirement Community
+,Inspirations Of River Center,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Inspirations Of Tempe,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Joy Care Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,June And Frank Sackton Assisted Living Apartments At Westminster Village,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,K T Homes,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Kopper Crest,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,La Sonora At Dove Mountain,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Lake House Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Lake View Terrace Memory Care Residence,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Las Palomas Senior Livingspectrum Retirement,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Legacy House Avondale,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Legacy House Of Avondale,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Legacy House Of Mesa Legacy Retirement Residence,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Liberty Home Care Assisted Living One,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Lifestream At Youngtown,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Lifestream At Youngtown,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Lifestream Complete Senior Living At Cook Health Care Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Litchfield Park Assisted Living Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Litchfield Park Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Loma Vista Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Maravilla Scottsdale,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Marigold At Redwood Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Maryland Gardens Post Acute,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Mayfair Edem Homes,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Mirabella At Asu,a:3:{i:0;i:162;i:1;i:5;i:2;i:3;},"Assisted Living Home, Assisted Living Community, Memory Care","Assisted Living Home, Continuing Care Retirement Community, Memory Care, Nursing Home","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community, Memory Care, Nursing Home"
+,Morningstar At Arcadia,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Morningstar Of Fountain Hills,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Mountain Care Of Snowflake,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Mountain Care Of Snowflake,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Mountain Park Senior Livingspectrum Retirement,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Mountain View Carehome,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Neighbors Assisted Living North,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Neighbors Assisted Living South,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Oakbrook Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Oasis At El Corral Assisted Living Center,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Obsidian Homes Ral,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Orchard Pointe At Surprise,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Orchard Pointe At Terrazza Operating,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Otilias Home Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Pacifica Senior Living Paradise Valley,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Pacifica Senior Living Peoria,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Palos Verdes Senior Livingspectrum Retirement,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Park Senior Villas Chandler,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Park Senior Villas At Goodyear,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Parkland Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Pebble Heights Assisted Living Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Pecan Care Concepts At American Orchards,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Powell Place,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Prestige Assisted Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Providence Place At Glencroft,a:1:{i:0;i:5;},Assisted Living Community,Continuing Care Retirement Community,Updated to include ALL types: Continuing Care Retirement Community
+,Rainbow Acres,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Rally,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Reflections At Fellowship Square Mesa,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Ridges At Peoria,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,River Valley Estates,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Rock Creek Alzheimers Special Care Center,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Rose Court Senior Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Royal Oaks Assisted Living Center,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Rustic Ranch Formerly My Fathers Retirement Ranch,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Savanna House Assisted Living Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Scottsdale Village Square,a:4:{i:0;i:162;i:1;i:5;i:2;i:6;i:3;i:3;},"Assisted Living Home, Assisted Living Community, Independent Living, Memory Care","Assisted Living Home, Continuing Care Retirement Community, Independent Living, Memory Care, Nursing Home","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community, Independent Living, Memory Care, Nursing Home"
+,Sedona Winds Independent Living,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Sedona Winds Independent Living Community,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Senior Wellcare Home,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Senita Ridge,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Shadow Mountain Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Sheridan Lane Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Sherwood Village Assisted Living And Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Sierra Del Sol,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Sierra Winds,a:1:{i:0;i:5;},Assisted Living Community,Continuing Care Retirement Community,Updated to include ALL types: Continuing Care Retirement Community
+,Silver Birch Of Avondale,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Silver Creek Inn Memory Care Community,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Silver Creek Leisure Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Silver Creek Leisure Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Solana At The Park Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Solstice Senior Living Sun City West,a:1:{i:0;i:6;},Independent Living,Independent Living,Updated to include ALL types: Independent Living
+,Solterra Senior Living White Mountain,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Splendido At Rancho Vistoso,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,Springdale Village Healthcare,a:3:{i:0;i:162;i:1;i:5;i:2;i:6;},"Assisted Living Home, Assisted Living Community, Independent Living","Assisted Living Home, Continuing Care Retirement Community, Independent Living","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community, Independent Living"
+,Summersett Haven,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Sun City Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Sun City West Assisted Living Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Sun Health Grandview Care Center,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,Sun Health La Loma Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Sun Health La Loma Care Center,a:1:{i:0;i:5;},Assisted Living Community,Continuing Care Retirement Community,Updated to include ALL types: Continuing Care Retirement Community
+,Sunridge Village Assisted Living And Memory Care,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Sunshine Village,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Suntown Assistance Home,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Tempe Post Acute,a:1:{i:0;i:5;},Assisted Living Community,Continuing Care Retirement Community,Updated to include ALL types: Continuing Care Retirement Community
+,Terra Pointe Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,The Citadel Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Cottages Of Tucson,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,The Enclave At Anthem Senior Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,The Enclave At Anthem Senior Livingspectrum Retirement,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,The Enclave At Chandler Senior Living Spectrum Retirement,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,The Enclave At Gilbert Senior Living Spectrum Retirement,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,The Forum At Desert Harbor,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,The Frontier House,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,The Gardens Of Sun City,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,The Gardens Of Sun City,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,The Groves Assisted Living And Memory Care,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,The Heritage At Carefree Senior Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Heritage Tradition,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,The Inn At Freedom Plaza Assisted Living And Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,The Inn At The Fountains,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Manors At Glencroft,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,The Oasis At Fellowship Square Tucson,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,The Palms At Sun City,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,The Peaks Health Rehabilitation,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,The Peaks A Senior Living Community,a:4:{i:0;i:162;i:1;i:5;i:2;i:6;i:3;i:3;},"Assisted Living Home, Assisted Living Community, Independent Living, Memory Care","Assisted Living Home, Continuing Care Retirement Community, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community, Independent Living, Memory Care"
+,The Rehabilitation Center At The Palazzo,a:1:{i:0;i:5;},Assisted Living Community,Continuing Care Retirement Community,Updated to include ALL types: Continuing Care Retirement Community
+,The Retreat At Alameda,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Towers At Glencroft,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Villa On Sweetwater 1,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Villas At Academy Village,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Villas At King Road Villa B Behavioral Health,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Villas At Wilmot Villa C,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Villas At Wilmot Villa D,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Watermark At Morrison Ranch,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Watermark Of Oro Valley,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Tucson Assisted Living Retreat,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Tucson Place Assisted Living Memory Care,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Tuscany Mccormick Ranch,a:1:{i:0;i:6;},Independent Living,Independent Living,Updated to include ALL types: Independent Living
+,Ventana Winds,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Vi At Grayhawk A Vi And Plaza Companies Community,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,Vi At Silverstone A Vi And Plaza Companies Commun,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,Via Elegante Galleria,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Board And Care Home, Memory Care","Updated to include ALL types: Assisted Living Home, Board And Care Home, Memory Care"
+,Via Elegante Mediterranean,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Board And Care Home, Memory Care","Updated to include ALL types: Assisted Living Home, Board And Care Home, Memory Care"
+,Via Elegante Sierra Vista Canyons,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Via Elegante Vineyard,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Board And Care Home, Memory Care","Updated to include ALL types: Assisted Living Home, Board And Care Home, Memory Care"
+,Villa Fiore Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Villa Hermosa Assisted Living,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,Villa Ocotillo Assisted Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Villas At Green Valley,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Visions Senior Living At Apache Junction 2,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Visions Senior Living At Mesa 2,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Vista Pointe At Sierra Vista,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Vista Winds,a:1:{i:0;i:6;},Independent Living,Independent Living,Updated to include ALL types: Independent Living
+,Vista Winds,a:1:{i:0;i:6;},Independent Living,Independent Living,Updated to include ALL types: Independent Living
+,Watermark At Continental Ranch,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,Willow Wind Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Woodland Palms,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Merrill Gardens At Anthem,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Visions Senior Living At Apache Junction,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Arbor Rose Senior Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Fellowship Square Mesa,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Visions Senior Living At Apache Junction 1,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Hacienda Del Rey,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Hacienda Del Rey 4,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Davis Place,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Sunridge Village,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Silver Creek Leisure Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Vi At Silverstone,a:2:{i:0;i:162;i:1;i:5;},"Assisted Living Home, Assisted Living Community","Assisted Living Home, Continuing Care Retirement Community","Updated to include ALL types: Assisted Living Home, Continuing Care Retirement Community"
+,Clearwater Ahwatukee,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Robson Reserve,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,Clearwater Agritopia,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Grand Court Of Mesa Senior Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Chandler Harmony Adult Care Home 1,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Marigold Assisted Living,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Board And Care Home, Memory Care","Updated to include ALL types: Assisted Living Home, Board And Care Home, Memory Care"
+,Ark Of Life,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Christian Care Assisted Living Cottonwood,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care, Nursing Home","Updated to include ALL types: Assisted Living Home, Memory Care, Nursing Home"
+,Fairmont Village,a:1:{i:0;i:3;},Memory Care,Memory Care,Updated to include ALL types: Memory Care
+,Ventana Winds Retirement Home,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Moonlight Manor,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Inn At Freedom Plaza,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Oasis Pavilion Nursing Rehabilitation Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Aspire Transitional Care,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Haven Of Flagstaff,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,The Legacy Rehab Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Morningstar Of Fountain Hills,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Life Care Center Of Scottsdale,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Sante Of North Scottsdale,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Citadel Post Acute,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Apache Junction Health Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Mi Casa Nursing Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Sante Of Mesa,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Rio Vista Post Acute Rehabilitation,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Palm Valley Rehabilitation Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Haven Health Camp Verde Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Solterra At White Mountains Two Ops,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care, Nursing Home","Updated to include ALL types: Assisted Living Home, Memory Care, Nursing Home"
+,The Center At Val Vista,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Haven Of Cottonwood,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Good Samaritan Society Prescott Valley,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Sunview Health And Rehabilitation Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Camelback Post Acute Care And Rehabilitation,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Ahc Of Glendale,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Coronado Healthcare Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Arizona State Veteran Homephx,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Haven Health Phoenix,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Avista Senior Living North Mountain,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,North Mountain Medical And Rehabilitation Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Center At Arrowhead,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Banner Boswell Rehabilitation Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Bridgewater Assisted Living Deer Valley,a:3:{i:0;i:162;i:1;i:6;i:2;i:3;},"Assisted Living Home, Independent Living, Memory Care","Assisted Living Home, Independent Living, Memory Care","Updated to include ALL types: Assisted Living Home, Independent Living, Memory Care"
+,Haven Of Globe,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Santa Rita Nursing Rehabilitation Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Villas At Green Valley Villa I,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Villas At Green Valley Villa B,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Villas At Green Valley Villa D,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Villas At Green Valley Villa G,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Villas At Green Valley Villa F,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,The Gardens Rehab Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Desert Highlands Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,The Lingenfelter Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Prestige Assisted Living At Lake Havasu,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Haven Of Lake Havasu,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Havasu Nursing Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Havasu Regional Medical Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,South Mountain Post Acute,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Allegiant Healthcare Of Phoenix,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Archstone Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Maravilla Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Hacienda Nursing Facility,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Suncrest Healthcare Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,The Watermark At Continental Ranch,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,Desert Springs Healthcare,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Heritage Court Post Acute Of Scottsdale,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Haven Of Scottsdale,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Villa Ocotillo,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Plaza Healthcare,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Avista Senior Living Tucson,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Mountain View Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,La Canada Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Casas Adobes Post Acute Rehabilitation Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Solterra La Cholla,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care, Nursing Home","Updated to include ALL types: Assisted Living Home, Memory Care, Nursing Home"
+,Haven Of Tucson,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Copper Health Oro Valley,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Barton House,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Bethesda Gardens,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Life Care Center Of Paradise Valley,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Desert Haven Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Ridgecrest Healthcare,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Caring Hearts Assisted Care Home,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Payson Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Rim Country Health Retirement Community,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Good Samaritan Society Prescott Village,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Prescott Nursing And Rehabilitation Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Mountain View Manor,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Haven Of Sedona,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Gila River Indian Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Life Care Center Of Sierra Vista,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Prestige Assisted Living At Sierra Vista,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Haven Of Sierra Vista,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Woodland Palms Memory Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Sabino Canyon Rehabilitation Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Sapphire Of Tucson Nursing And Rehab,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Villa Maria Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Desert Gardens Assisted Living And Memory Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,La Paz Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Arizona State Veteran Home Tucson,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Santa Rosa Care Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Foothills Rehabilitation Center,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Sapphire Estates Rehab Centre,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Haven Of Yuma,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Life Care Center Of Yuma,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Palm View Rehabilitation Care,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Nursing Home","Updated to include ALL types: Assisted Living Home, Nursing Home"
+,Avalon Care Centerbountiful,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living Albuquerque,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living Garden City,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living Nampa,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Avista Senior Living Twin Falls,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bee Hive Homes Of Albuquerque West,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bee Hive Homes Of Edgewood Ii,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bee Hive Homes Of Pagosa Springs,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bee Hive Homes Of Rio Rancho Ii,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bee Hive Homes Of Santa Fe,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bee Hive Homes Of Taylor Ranch,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Best Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Best Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bethesda Gardens Loveland,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bethesda Gardens Monument,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bethesda Gardens Thornton,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Bethesda Gardens Thornton Assisted Living And Memory Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Cache Valley Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Caring Hearts,a:2:{i:0;i:162;i:1;i:3;},"Assisted Living Home, Memory Care","Assisted Living Home, Memory Care","Updated to include ALL types: Assisted Living Home, Memory Care"
+,Comfort Care Assisted Living Memory Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Country Cottage Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Country Oaks Assisted Living Of Layton,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Crestwood Serenity Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Fellowship Square Tucson,a:2:{i:0;i:162;i:1;i:6;},"Assisted Living Home, Independent Living","Assisted Living Home, Independent Living","Updated to include ALL types: Assisted Living Home, Independent Living"
+,Friendship House At The Home,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Gardens Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Good Life Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Good Life Assisted Living And Memory Care,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Grace Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Grace Assisted Living Allumbaugh Way,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Grace Assisted Living At Caldwell,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Grace Assisted Living At State Street,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Grace Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Grace Assisted Living Of Fairview Lakes,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Heatherwood Senior Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Heber Valley Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Heritage Assisted Living Of Twin Falls,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Hidden Valley Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,High Desert Assisted Livinghouse 1,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,High Desert Assisted Livinghouse 2,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Lakeside,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Lakeside Assisted Living Sandpoint,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Legacy Retirement Residence,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Los Alamos Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Luna Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Meadows Assisted Living Center,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Monroe Canyon Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Mountain View Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,New Beginnings,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Parkwood Meadows Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Peachtree Assisted Living Llc 1,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Peachtree Assisted Living Llc 2,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Point Of The Pines Gardens Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,Prestige Assisted Living At Autumn Wind,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,St Lukes Home Care Hospice,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Summit Senior Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Sunrise Assisted Living At University Park,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Sunrise Assisted Living Of Boulder,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Sunset Vista,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Tambree Meadows Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Gardens At Broadmoor Court Assisted Living Bethesda Community,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Heritage Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,"Assisted Living Home, Board And Care Home","Updated to include ALL types: Assisted Living Home, Board And Care Home"
+,The Retreat At Sunbrook Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,The Retreat At Sunriver St George,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Unique Senior Care Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Valley Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Welcome Home Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Welcome Home Assisted Living American Fork,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Welcome Home Healthcare Services,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home
+,Wellspring Meadows Assisted Living,a:1:{i:0;i:162;},Assisted Living Home,Assisted Living Home,Updated to include ALL types: Assisted Living Home

@@ -1,0 +1,191 @@
+{
+  "zip_85048": {
+    "total_results": 0,
+    "first_correct": false,
+    "subsequent_correct": true,
+    "alphabetically_ordered": true,
+    "bug_confirmed": false
+  },
+  "zip_multiple": {
+    "85048": {
+      "total": 0,
+      "relevant": 0,
+      "relevance_rate": 0
+    },
+    "85260": {
+      "total": 0,
+      "relevant": 0,
+      "relevance_rate": 0
+    },
+    "85028": {
+      "total": 0,
+      "relevant": 0,
+      "relevance_rate": 0
+    },
+    "85364": {
+      "total": 0,
+      "relevant": 0,
+      "relevance_rate": 0
+    },
+    "85395": {
+      "total": 0,
+      "relevant": 0,
+      "relevance_rate": 0
+    },
+    "85251": {
+      "total": 0,
+      "relevant": 0,
+      "relevance_rate": 0
+    }
+  },
+  "type_mapping_issues": {
+    "Assisted Living Home": [
+      {
+        "title": "Yampa Makarios Assisted Living",
+        "assigned_type": "Assisted Living Home",
+        "suggested_type": "Assisted Living Community"
+      },
+      {
+        "title": "Xanadu Assisted Living Residence",
+        "assigned_type": "Assisted Living Home",
+        "suggested_type": "Assisted Living Community"
+      }
+    ],
+    "Independent Living": [
+      {
+        "title": "Yampa Makarios Assisted Living",
+        "assigned_type": "Independent Living",
+        "suggested_type": "Assisted Living Community"
+      },
+      {
+        "title": "Xanadu Assisted Living Residence",
+        "assigned_type": "Independent Living",
+        "suggested_type": "Assisted Living Community"
+      }
+    ],
+    "Memory Care": [
+      {
+        "title": "Yampa Makarios Assisted Living",
+        "assigned_type": "Memory Care",
+        "suggested_type": "Assisted Living Community"
+      },
+      {
+        "title": "Xanadu Assisted Living Residence",
+        "assigned_type": "Memory Care",
+        "suggested_type": "Assisted Living Community"
+      }
+    ],
+    "Nursing Home": [
+      {
+        "title": "Yampa Makarios Assisted Living",
+        "assigned_type": "Nursing Home",
+        "suggested_type": "Assisted Living Community"
+      },
+      {
+        "title": "Xanadu Assisted Living Residence",
+        "assigned_type": "Nursing Home",
+        "suggested_type": "Assisted Living Community"
+      }
+    ],
+    "Home Care": [
+      {
+        "title": "Yampa Makarios Assisted Living",
+        "assigned_type": "Home Care",
+        "suggested_type": "Assisted Living Community"
+      },
+      {
+        "title": "Xanadu Assisted Living Residence",
+        "assigned_type": "Home Care",
+        "suggested_type": "Assisted Living Community"
+      }
+    ]
+  },
+  "sp_wp_consistency": [
+    {
+      "title": "You&#8217;re At Home",
+      "website": "https://app.seniorplace.com/communities/show/06def1b3-23e3-4622-89f8-7ab897afb501",
+      "wp_types": "listing",
+      "sp_id": "06def1b3-23e3-4622-89f8-7ab897afb501"
+    },
+    {
+      "title": "Yampa Makarios Assisted Living",
+      "website": "https://app.seniorplace.com/communities/show/2005dfac-d22f-4ca4-9fc5-128e31808904",
+      "wp_types": "listing",
+      "sp_id": "2005dfac-d22f-4ca4-9fc5-128e31808904"
+    },
+    {
+      "title": "Xanadu Assisted Living Residence",
+      "website": "https://app.seniorplace.com/communities/show/7316da54-f58f-4cac-8531-25180dc4411a",
+      "wp_types": "listing",
+      "sp_id": "7316da54-f58f-4cac-8531-25180dc4411a"
+    },
+    {
+      "title": "Woodland Park Rehabilitation And Care Center",
+      "website": "https://app.seniorplace.com/communities/show/29de831c-aa35-45f6-821d-9072f9ad9797",
+      "wp_types": "listing",
+      "sp_id": "29de831c-aa35-45f6-821d-9072f9ad9797"
+    },
+    {
+      "title": "Woodland Estates Senior Living",
+      "website": "https://app.seniorplace.com/communities/show/4772e88c-d3ab-4a49-ba95-2d4590cb7c0e",
+      "wp_types": "listing",
+      "sp_id": "4772e88c-d3ab-4a49-ba95-2d4590cb7c0e"
+    },
+    {
+      "title": "Woodland Assisted Living",
+      "website": "https://app.seniorplace.com/communities/show/73e2a8ff-450f-460c-9f76-84e7e33c65f7",
+      "wp_types": "listing",
+      "sp_id": "73e2a8ff-450f-460c-9f76-84e7e33c65f7"
+    },
+    {
+      "title": "Woodlake Legacy Senior Living",
+      "website": "https://app.seniorplace.com/communities/show/b182f60d-c449-4362-a10e-451cea3ec05a",
+      "wp_types": "listing",
+      "sp_id": "b182f60d-c449-4362-a10e-451cea3ec05a"
+    },
+    {
+      "title": "Winslow Court Retirement Community",
+      "website": "https://app.seniorplace.com/communities/show/cb72561c-b668-4d0b-9d30-68ce2d8191f0",
+      "wp_types": "listing",
+      "sp_id": "cb72561c-b668-4d0b-9d30-68ce2d8191f0"
+    },
+    {
+      "title": "Wind Crest Senior Living Community",
+      "website": "https://app.seniorplace.com/communities/show/b34b294a-157e-433d-9b29-f1a361fd8cd1",
+      "wp_types": "listing",
+      "sp_id": "b34b294a-157e-433d-9b29-f1a361fd8cd1"
+    },
+    {
+      "title": "The Willows At Crestview",
+      "website": "https://app.seniorplace.com/communities/show/79e6f950-835c-4a0f-9e5b-aa6fc570c5b5",
+      "wp_types": "listing",
+      "sp_id": "79e6f950-835c-4a0f-9e5b-aa6fc570c5b5"
+    }
+  ],
+  "marigold_case": [
+    {
+      "id": 10521,
+      "title": "Marigold Assisted Living",
+      "address": "4312 East Redwood Lane, Phoenix, Az 85048",
+      "website": "https://www.seniorly.com/assisted-living/arizona/phoenix/marigold-assisted-living",
+      "content_length": 293,
+      "source": "seniorly"
+    },
+    {
+      "id": 8610,
+      "title": "Marigold At Redwood Assisted Living",
+      "address": "4312 East Redwood Lane, Phoenix, Az 85048",
+      "website": "https://app.seniorplace.com/communities/show/4fd89053-c24a-4f12-8ff5-db13faaa2e6b",
+      "content_length": 293,
+      "source": "seniorplace"
+    },
+    {
+      "id": 7411,
+      "title": "Desert Marigold Senior Living Of Tempe",
+      "address": "601 East Westchester Drive, Tempe, Az 85283",
+      "website": "https://app.seniorplace.com/communities/show/92c732d2-2fb9-4e83-ba0c-45ee5918f962",
+      "content_length": 0,
+      "source": "seniorplace"
+    }
+  ]
+}

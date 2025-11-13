@@ -1,0 +1,198 @@
+{
+  "care_type_filter": {
+    "Assisted Living Community": {
+      "id": 5,
+      "count": 20,
+      "status": "success"
+    },
+    "Assisted Living Home": {
+      "id": 162,
+      "count": 20,
+      "status": "success"
+    },
+    "Memory Care": {
+      "id": 3,
+      "count": 20,
+      "status": "success"
+    },
+    "Independent Living": {
+      "id": 6,
+      "count": 20,
+      "status": "success"
+    },
+    "Nursing Home": {
+      "id": 7,
+      "count": 20,
+      "status": "success"
+    },
+    "Home Care": {
+      "id": 488,
+      "count": 20,
+      "status": "success"
+    }
+  },
+  "location_filters": {
+    "Arizona": {
+      "count": 0,
+      "status": "http_400"
+    },
+    "Colorado": {
+      "count": 0,
+      "status": "http_400"
+    },
+    "Utah": {
+      "count": 0,
+      "status": "http_400"
+    },
+    "Idaho": {
+      "count": 0,
+      "status": "http_400"
+    },
+    "New Mexico": {
+      "count": 0,
+      "status": "http_400"
+    },
+    "cities": {
+      "Phoenix": 10,
+      "Scottsdale": 10,
+      "Mesa": 10,
+      "Tucson": 10,
+      "Denver": 3
+    }
+  },
+  "price_filters": {
+    "Under $2000": {
+      "min": 0,
+      "max": 2000,
+      "count": 80,
+      "status": "success"
+    },
+    "$2000-$3000": {
+      "min": 2000,
+      "max": 3000,
+      "count": 4,
+      "status": "success"
+    },
+    "$3000-$4000": {
+      "min": 3000,
+      "max": 4000,
+      "count": 7,
+      "status": "success"
+    },
+    "$4000-$5000": {
+      "min": 4000,
+      "max": 5000,
+      "count": 3,
+      "status": "success"
+    },
+    "Over $5000": {
+      "min": 5000,
+      "max": 10000,
+      "count": 7,
+      "status": "success"
+    }
+  },
+  "search": {
+    "memory care": {
+      "count": 20,
+      "relevance_score": 4,
+      "top_result": "Whisper Cove Assisted Living And Memory Care",
+      "status": "success"
+    },
+    "assisted living": {
+      "count": 20,
+      "relevance_score": 4,
+      "top_result": "Xanadu Assisted Living Residence",
+      "status": "success"
+    },
+    "independent living": {
+      "count": 15,
+      "relevance_score": 4,
+      "top_result": "The Winslow Independent Living",
+      "status": "success"
+    },
+    "alzheimer": {
+      "count": 15,
+      "relevance_score": 2,
+      "top_result": "The Citadel Alzheimers And Dementia Secured Assisted Living",
+      "status": "success"
+    },
+    "dementia": {
+      "count": 3,
+      "relevance_score": 2,
+      "top_result": "The Citadel Alzheimers And Dementia Secured Assisted Living",
+      "status": "success"
+    },
+    "phoenix assisted living": {
+      "count": 2,
+      "relevance_score": 6,
+      "top_result": "Phoenix Assisted Living",
+      "status": "success"
+    },
+    "scottsdale memory care": {
+      "count": 3,
+      "relevance_score": 6,
+      "top_result": "Avenir Memory Care At Scottsdale",
+      "status": "success"
+    },
+    "affordable senior living": {
+      "count": 0,
+      "relevance_score": 0,
+      "status": "no_results"
+    },
+    "luxury senior community": {
+      "count": 3,
+      "relevance_score": 2,
+      "top_result": "Windsor Luxury Assisted Living",
+      "status": "success"
+    }
+  },
+  "combined_filters": {
+    "Memory Care in Arizona": {
+      "params": {
+        "type": 3,
+        "search": "arizona"
+      },
+      "count": 20,
+      "status": "success"
+    },
+    "Assisted Living in Phoenix": {
+      "params": {
+        "type": 5,
+        "search": "phoenix"
+      },
+      "count": 16,
+      "status": "success"
+    },
+    "Independent Living in Scottsdale": {
+      "params": {
+        "type": 6,
+        "search": "scottsdale"
+      },
+      "count": 20,
+      "status": "success"
+    }
+  },
+  "performance": {
+    "Basic listing load": {
+      "response_time": 0.3023829460144043,
+      "count": 20,
+      "status": "success"
+    },
+    "Care type filter": {
+      "response_time": 0.28399014472961426,
+      "count": 20,
+      "status": "success"
+    },
+    "Search query": {
+      "response_time": 0.32919764518737793,
+      "count": 20,
+      "status": "success"
+    },
+    "Large result set": {
+      "response_time": 0.4224681854248047,
+      "count": 100,
+      "status": "success"
+    }
+  }
+}

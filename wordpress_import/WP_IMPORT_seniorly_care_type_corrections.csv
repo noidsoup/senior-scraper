@@ -1,0 +1,12 @@
+ID,type,normalized_types,_type,classification_confidence,classification_score,correction_reason
+6804,5,Assisted Living Community,5,High,6,"[""Title contains 'place' (community indicator)"", 'Known large community brand: aegis', ""Generic 'assisted living' without 'home'""]"
+6808,5,Assisted Living Community,5,High,4,"['Known large community brand: aegis', ""Generic 'assisted living' without 'home'""]"
+6810,5,Assisted Living Community,5,High,4,"['Known large community brand: aegis', ""Generic 'assisted living' without 'home'""]"
+7153,5,Assisted Living Community,5,High,5,"[""Title contains 'ridge' (community indicator)"", 'Known large community brand: brookdale']"
+8324,5,Assisted Living Community,5,High,5,"[""Title contains 'living center' (community indicator)"", ""Title contains 'manor' (community indicator)"", ""Generic 'assisted living' without 'home'""]"
+10275,5,Assisted Living Community,5,High,5,"[""Title contains 'gardens' (community indicator)"", 'Known large community brand: merrill gardens']"
+10283,5,Assisted Living Community,5,High,4,"[""Title contains 'senior living' (community indicator)"", ""Title contains 'ridge' (community indicator)""]"
+10404,5,Assisted Living Community,5,High,4,"[""Title contains 'village' (community indicator)"", ""Title contains 'ridge' (community indicator)""]"
+10430,5,Assisted Living Community,5,High,4,"[""Title contains 'senior living' (community indicator)"", ""Title contains 'gardens' (community indicator)""]"
+10671,5,Assisted Living Community,5,High,7,"[""Title contains 'senior living' (community indicator)"", ""Title contains 'village' (community indicator)"", 'Known large community brand: belmont village']"
+11038,5,Assisted Living Community,5,High,5,"[""Title contains 'living center' (community indicator)"", ""Title contains 'manor' (community indicator)"", ""Generic 'assisted living' without 'home'""]"

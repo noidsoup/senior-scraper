@@ -1,0 +1,26 @@
+{
+  "zip_85048": {
+    "status": "success",
+    "listing_count": 25,
+    "zip_mentions": 0,
+    "url": "https://communities.aplaceforseniors.org/listings?onBehalf=My+parent&timeline=A+month&budget=2500-5000&state=arizona&city=phoenix&location=phoenix&zip=85048"
+  },
+  "zip_85282": {
+    "status": "success",
+    "listing_count": 25,
+    "zip_mentions": 0,
+    "url": "https://communities.aplaceforseniors.org/listings?onBehalf=My+parent&timeline=A+month&budget=2500-5000&state=arizona&city=tempe&location=tempe&zip=85282"
+  },
+  "zip_85208": {
+    "status": "success",
+    "listing_count": 25,
+    "zip_mentions": 0,
+    "url": "https://communities.aplaceforseniors.org/listings?onBehalf=My+parent&timeline=A+month&budget=2500-5000&state=arizona&city=mesa&location=mesa&zip=85208"
+  },
+  "zip_80224": {
+    "status": "success",
+    "listing_count": 13,
+    "zip_mentions": 0,
+    "url": "https://communities.aplaceforseniors.org/listings?onBehalf=My+parent&timeline=A+month&budget=2500-5000&state=colorado&city=denver&location=denver&zip=80224"
+  }
+}

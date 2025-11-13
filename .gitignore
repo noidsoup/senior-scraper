@@ -1,0 +1,77 @@
+__pycache__/
+*.py[cod]
+*.so
+.Python
+.venv/
+venv/
+env/
+.env
+.DS_Store
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.idea/
+.vscode/
+.ipynb_checkpoints/
+
+# Logs and checkpoints
+*.log
+*.import_checkpoint.json
+wordpress_import_progress.log
+
+# Data artifacts
+data/raw/**
+data/processed/archive/**
+monthly_updates/**
+data_outputs/**
+
+# Node/Playwright caches (if any)
+playwright/.cache/
+
+# Environment and credentials
+.env
+*.env
+!*.example.env
+
+# Monthly update outputs
+monthly_updates/
+run_monthly_update.sh
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Logs
+*.log
+*.checkpoint
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Playwright
+.playwright/
+playwright-report/
+test-results/
+
+# Sensitive data
+*_credentials.json
+*_secrets.json
+
