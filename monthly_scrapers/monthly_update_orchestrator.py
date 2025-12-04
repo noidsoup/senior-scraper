@@ -177,8 +177,8 @@ class MonthlyUpdateOrchestrator:
                 # Detect pagination from "Next" button
                 total_pages = 1
                 try:
-                    # Check if there's a Next button
-                    next_button = await page.query_selector('a:has-text("Next")')
+                    # Check if there's a Next button (it's a button, not a link!)
+                    next_button = await page.query_selector('button:has-text("Next")')
                     if next_button:
                         # There are multiple pages, we'll paginate until no Next button
                         total_pages = 999  # Will break when no more Next button
@@ -242,8 +242,8 @@ class MonthlyUpdateOrchestrator:
                     all_listings.extend(listings)
                     self.log(f"Page {page_num}: Found {len(listings)} {state_code} listings on this page", "PROGRESS")
                     
-                    # Check for Next button
-                    next_button = await page.query_selector('a:has-text("Next")')
+                    # Check for Next button (it's a button, not a link!)
+                    next_button = await page.query_selector('button:has-text("Next")')
                     if not next_button:
                         self.log(f"No more pages, stopping at page {page_num}", "INFO")
                         break
