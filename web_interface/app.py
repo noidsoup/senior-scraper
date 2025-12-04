@@ -291,17 +291,25 @@ def api_run_scraper():
         log_dir.mkdir(exist_ok=True)
         log_file = log_dir / f"scraper_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
         
-        with open(log_file, 'w') as f:
-            process = subprocess.Popen(
-                cmd,
-                stdout=f,
-                stderr=subprocess.STDOUT,
-                cwd=project_root
-            )
+        # Open file handle that stays open for the subprocess
+        log_handle = open(log_file, 'w', encoding='utf-8')
+        
+        # Pass environment variables to subprocess
+        env = os.environ.copy()
+        env['PYTHONIOENCODING'] = 'utf-8'
+        
+        process = subprocess.Popen(
+            cmd,
+            stdout=log_handle,
+            stderr=subprocess.STDOUT,
+            cwd=project_root,
+            env=env
+        )
         
         running_processes['scraper'] = {
             'process': process,
             'log_file': str(log_file),
+            'log_handle': log_handle,  # Keep handle open
             'started': datetime.now().isoformat()
         }
         
@@ -312,6 +320,46 @@ def api_run_scraper():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/upload-csv', methods=['POST'])
+def api_upload_csv():
+    """Upload a CSV file for import"""
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    
+    if not file.filename.endswith('.csv'):
+        return jsonify({'error': 'File must be a CSV'}), 400
+    
+    try:
+        project_root = get_project_root()
+        upload_dir = project_root / 'web_interface' / 'uploads'
+        upload_dir.mkdir(exist_ok=True)
+        
+        # Save with timestamp to avoid conflicts
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        safe_filename = f"upload_{timestamp}_{file.filename}"
+        file_path = upload_dir / safe_filename
+        
+        file.save(str(file_path))
+        
+        # Count rows
+        import csv
+        with open(file_path, 'r', encoding='utf-8') as f:
+            row_count = sum(1 for _ in csv.DictReader(f))
+        
+        return jsonify({
+            'status': 'uploaded',
+            'filename': safe_filename,
+            'path': str(file_path.relative_to(project_root)),
+            'row_count': row_count
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Upload failed: {str(e)}'}), 500
 
 @app.route('/api/run-import', methods=['POST'])
 def api_run_import():
@@ -357,21 +405,29 @@ def api_run_import():
         log_dir.mkdir(exist_ok=True)
         log_file = log_dir / f"import_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
         
-        with open(log_file, 'w') as f:
-            process = subprocess.Popen(
-                cmd,
-                stdout=f,
-                stderr=subprocess.STDOUT,
-                stdin=subprocess.PIPE,
-                cwd=project_root
-            )
-            # Auto-confirm with 'yes'
-            process.stdin.write(b'yes\n')
-            process.stdin.flush()
+        # Open file handle that stays open for the subprocess
+        log_handle = open(log_file, 'w', encoding='utf-8')
+        
+        # Pass environment variables to subprocess
+        env = os.environ.copy()
+        env['PYTHONIOENCODING'] = 'utf-8'
+        
+        process = subprocess.Popen(
+            cmd,
+            stdout=log_handle,
+            stderr=subprocess.STDOUT,
+            stdin=subprocess.PIPE,
+            cwd=project_root,
+            env=env
+        )
+        # Auto-confirm with 'yes'
+        process.stdin.write(b'yes\n')
+        process.stdin.flush()
         
         running_processes['import'] = {
             'process': process,
             'log_file': str(log_file),
+            'log_handle': log_handle,  # Keep handle open
             'started': datetime.now().isoformat()
         }
         
@@ -397,6 +453,12 @@ def api_process_status(process_name):
         status = 'running'
     else:
         status = 'completed' if process.returncode == 0 else 'failed'
+        # Close log file handle if present
+        if 'log_handle' in proc_info and proc_info['log_handle']:
+            try:
+                proc_info['log_handle'].close()
+            except:
+                pass
         # Clean up
         del running_processes[process_name]
     
@@ -419,11 +481,18 @@ def api_stop_process(process_name):
         # Terminate the process
         if os.name == 'nt':
             # Windows
-            os.system(f'taskkill /PID {process.pid} /F')
+            os.system(f'taskkill /PID {process.pid} /F /T')
         else:
             # Unix/Linux/Mac
             process.terminate()
             process.wait(timeout=5)
+        
+        # Close log file handle if present
+        if 'log_handle' in proc_info and proc_info['log_handle']:
+            try:
+                proc_info['log_handle'].close()
+            except:
+                pass
         
         # Clean up
         del running_processes[process_name]

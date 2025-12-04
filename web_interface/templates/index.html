@@ -408,12 +408,26 @@
                     Import senior communities into our WordPress directory to help families find the right place.
                 </p>
 
+                <!-- Option 1: Upload CSV -->
+                <div class="form-group" style="background: #f0f7ff; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <label style="font-weight: 600; color: #667eea;">📤 Upload a CSV File:</label>
+                    <input type="file" class="form-control" id="import-csv-upload" accept=".csv" style="margin-top: 0.5rem; padding: 0.5rem;">
+                    <small style="display: block; margin-top: 0.5rem; color: #666;">
+                        Upload any CSV with columns: title, address, city, state, zip, url (Senior Place URL)
+                    </small>
+                </div>
+
+                <div style="text-align: center; color: #999; margin: 1rem 0;">— OR —</div>
+
+                <!-- Option 2: Select existing file -->
                 <div class="form-group">
-                    <label>Select Communities File:</label>
+                    <label>Select from Existing Files:</label>
                     <select class="form-control" id="import-csv-file">
                         <option value="">Loading...</option>
                     </select>
                 </div>
+
+                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #eee;">
 
                 <div class="form-group">
                     <label>Batch Size:</label>
@@ -527,7 +541,7 @@
                 if (data.recent_runs && data.recent_runs.length > 0) {
                     const run = data.recent_runs[0];
                     lastRun.innerHTML = `
-                        <div class="stat-label">Run: ${run.timestamp}</div>
+                        <div class="stat-label">${formatTimestamp(run.timestamp)}</div>
                         <div style="margin-top: 0.5rem; display: flex; gap: 1rem;">
                             <div>
                                 <div style="font-weight: 600; color: #28a745;">${run.stats.new_listings_found}</div>
@@ -585,7 +599,7 @@
                     <tbody>
                         ${runs.map(run => `
                             <tr>
-                                <td>${run.timestamp}</td>
+                                <td>${formatTimestamp(run.timestamp)}</td>
                                 <td>${run.stats.new_listings_found}</td>
                                 <td>${run.stats.listings_updated}</td>
                                 <td>${run.stats.care_type_updates}</td>
@@ -737,12 +751,46 @@
             const button = document.getElementById('btn-run-import');
             const statusDiv = document.getElementById('import-status');
             const logDiv = document.getElementById('import-log');
-            const csvFile = document.getElementById('import-csv-file').value;
+            const uploadInput = document.getElementById('import-csv-upload');
+            const csvFileSelect = document.getElementById('import-csv-file').value;
             const batchSize = document.getElementById('import-batch-size').value;
             const limit = document.getElementById('import-limit').value;
 
+            let csvFile = csvFileSelect;
+
+            // Check if user uploaded a file
+            if (uploadInput.files && uploadInput.files.length > 0) {
+                button.disabled = true;
+                statusDiv.innerHTML = '<div class="alert alert-info">Uploading CSV file...</div>';
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('file', uploadInput.files[0]);
+                    
+                    const uploadResponse = await fetch('/api/upload-csv', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const uploadData = await uploadResponse.json();
+                    
+                    if (!uploadResponse.ok) {
+                        statusDiv.innerHTML = `<div class="alert alert-danger">❌ Upload failed: ${uploadData.error}</div>`;
+                        button.disabled = false;
+                        return;
+                    }
+                    
+                    csvFile = uploadData.path;
+                    statusDiv.innerHTML = `<div class="alert alert-success">✅ Uploaded ${uploadData.row_count} listings. Starting import...</div>`;
+                } catch (error) {
+                    statusDiv.innerHTML = `<div class="alert alert-danger">❌ Upload error: ${error.message}</div>`;
+                    button.disabled = false;
+                    return;
+                }
+            }
+
             if (!csvFile) {
-                statusDiv.innerHTML = '<div class="alert alert-danger">Please select a CSV file</div>';
+                statusDiv.innerHTML = '<div class="alert alert-danger">Please upload a CSV file or select one from the dropdown</div>';
                 return;
             }
 
@@ -883,6 +931,23 @@
                 "'": '&#039;'
             };
             return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function formatTimestamp(ts) {
+            // Convert "20251113_120410" to "Nov 13, 2025 at 12:04 PM"
+            if (!ts || ts.length < 15) return ts;
+            
+            const year = ts.substring(0, 4);
+            const month = parseInt(ts.substring(4, 6)) - 1;
+            const day = ts.substring(6, 8);
+            const hour = parseInt(ts.substring(9, 11));
+            const minute = ts.substring(11, 13);
+            
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const hour12 = hour % 12 || 12;
+            
+            return `${months[month]} ${parseInt(day)}, ${year} at ${hour12}:${minute} ${ampm}`;
         }
 
         async function runTest() {
