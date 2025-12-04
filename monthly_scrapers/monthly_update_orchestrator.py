@@ -17,6 +17,7 @@ import asyncio
 import csv
 import json
 import argparse
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
@@ -436,6 +437,7 @@ class MonthlyUpdateOrchestrator:
                 'home health': 'Home Care',
                 'hospice': 'Home Care',
                 'respite care': 'Assisted Living Community',
+                'directed care': 'Assisted Living Home',  # Arizona-specific, maps to ALH
             }
             canonical = []
             for ct in care_types_list:
@@ -573,6 +575,12 @@ LOGIN_URL = "https://app.seniorplace.com/login"
 
 
 async def main():
+    # Set UTF-8 encoding for Windows console
+    if os.name == 'nt':
+        import sys
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    
     parser = argparse.ArgumentParser(description="Monthly update orchestrator for senior living listings")
     parser.add_argument('--full-update', action='store_true', help='Run complete update (new + existing)')
     parser.add_argument('--new-only', action='store_true', help='Only find new listings')

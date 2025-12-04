@@ -729,6 +729,12 @@ def import_csv_safe(csv_file, batch_size=DEFAULT_BATCH_SIZE, limit=None, resume=
 
 
 def main():
+    # Set UTF-8 encoding for Windows console
+    if os.name == 'nt':
+        import sys
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    
     parser = argparse.ArgumentParser(
         description='Import Senior Place listings to WordPress (SAFE MODE)',
         formatter_class=argparse.RawDescriptionHelpFormatter,

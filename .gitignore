@@ -1,47 +1,3 @@
-__pycache__/
-*.py[cod]
-*.so
-.Python
-.venv/
-venv/
-env/
-.env
-.DS_Store
-.pytest_cache/
-.coverage
-.coverage.*
-htmlcov/
-dist/
-build/
-.mypy_cache/
-.ruff_cache/
-.idea/
-.vscode/
-.ipynb_checkpoints/
-
-# Logs and checkpoints
-*.log
-*.import_checkpoint.json
-wordpress_import_progress.log
-
-# Data artifacts
-data/raw/**
-data/processed/archive/**
-monthly_updates/**
-data_outputs/**
-
-# Node/Playwright caches (if any)
-playwright/.cache/
-
-# Environment and credentials
-.env
-*.env
-!*.example.env
-
-# Monthly update outputs
-monthly_updates/
-run_monthly_update.sh
-
 # Python
 __pycache__/
 *.py[cod]
@@ -49,29 +5,66 @@ __pycache__/
 *.so
 .Python
 venv/
+.venv/
 env/
 ENV/
 
-# Logs
-*.log
-*.checkpoint
+# ========================================
+# CREDENTIALS & SECRETS - CRITICAL!
+# ========================================
+.env
+*.env
+!*.example.env
+wp_config.env
+memory.local.md
 
-# IDE
+# ========================================
+# IDE & OS
+# ========================================
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Playwright
+# ========================================
+# Logs and Runtime Files
+# ========================================
+*.log
+*.import_checkpoint.json
+web_interface/logs/
+
+# ========================================
+# Generated Data (can be regenerated)
+# ========================================
+monthly_updates/
+data/raw/**
+data/processed/archive/**
+data_outputs/
+current_scraped_data/*.csv
+
+# ========================================
+# Playwright & Testing
+# ========================================
 .playwright/
+playwright/.cache/
 playwright-report/
 test-results/
+*.checkpoint
 
-# Sensitive data
-*_credentials.json
-*_secrets.json
+# ========================================
+# Legacy/Archive (contains old credentials)
+# ========================================
+archive/
+scrapers_archive/
 
+# ========================================
+# Large CSV Data Files
+# ========================================
+organized_csvs/
+wordpress_import/
+california_expansion/*.csv
+*_seniorplace_data_*.csv
+SAMPLE_*.csv
+TEST_*.csv

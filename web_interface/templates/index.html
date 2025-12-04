@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior Scraper Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-running {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .button:hover:not(:disabled) {
+            background: #5568d3;
+        }
+
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .button-secondary {
+            background: #6c757d;
+        }
+
+        .button-secondary:hover:not(:disabled) {
+            background: #5a6268;
+        }
+
+        .button-danger {
+            background: #dc3545;
+        }
+
+        .button-danger:hover:not(:disabled) {
+            background: #c82333;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .log-viewer {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Senior Scraper Dashboard 👴👵</h1>
+        <p>A place for seniors - Manage WordPress imports and community operations</p>
+    </div>
+
+    <div class="container">
+        <!-- Status Cards -->
+        <div class="grid">
+            <div class="card">
+                <h2>📊 WordPress Status</h2>
+                <div id="wp-status">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🔐 Environment</h2>
+                <div id="env-status">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📅 Last Run</h2>
+                <div id="last-run">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Tabs -->
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('scraper')">🔍 Find Communities 👴</button>
+                <button class="tab" onclick="switchTab('single')">📌 Single Listing</button>
+                <button class="tab" onclick="switchTab('import')">📥 Add Communities 👵</button>
+                <button class="tab" onclick="switchTab('history')">📜 Search History</button>
+                <button class="tab" onclick="switchTab('test')">🧪 Check System</button>
+            </div>
+
+            <!-- Single Listing Tab -->
+            <div id="tab-single" class="tab-content">
+                <h2>📌 Import Single Listing from Senior Place</h2>
+                <p style="margin-bottom: 1.5rem; color: #666;">
+                    Quickly fetch and preview a single community by URL, then add to WordPress.
+                </p>
+
+                <div class="form-group">
+                    <label>Senior Place Listing URL:</label>
+                    <input type="text" class="form-control" id="single-url" placeholder="https://app.seniorplace.com/communities/show/..." style="font-family: monospace; font-size: 0.9rem;">
+                    <small style="display: block; margin-top: 0.5rem; color: #999;">
+                        Example: https://app.seniorplace.com/communities/show/6abadb36-0cff-4931-a9ca-154f27c5795e
+                    </small>
+                </div>
+
+                <button class="button" id="btn-fetch-single" onclick="fetchSingleListing()">
+                    🔗 Fetch Listing
+                </button>
+
+                <div id="single-status" style="margin-top: 1rem;"></div>
+                <div id="single-preview" style="margin-top: 1rem;"></div>
+            </div>
+
+            <!-- Scraper Tab -->
+            <div id="tab-scraper" class="tab-content active">
+                <h2>🔍 Find Senior Communities</h2>
+                <p style="margin-bottom: 1.5rem; color: #666;">
+                    Discover new senior living communities from Senior Place and keep our directory current.
+                </p>
+                
+                <div class="form-group">
+                    <label>Select States to Search:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="state" value="AZ" checked> Arizona
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="state" value="CA" checked> California
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="state" value="CO" checked> Colorado
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="state" value="ID" checked> Idaho
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="state" value="NM" checked> New Mexico
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="state" value="UT" checked> Utah
+                        </label>
+                    </div>
+                </div>
+
+                <button class="button" id="btn-run-scraper" onclick="runScraper()">
+                    🚀 Search for Communities
+                </button>
+
+                <div id="scraper-status" style="margin-top: 1rem;"></div>
+                <div id="scraper-log" style="margin-top: 1rem;"></div>
+            </div>
+
+            <!-- Import Tab -->
+            <div id="tab-import" class="tab-content">
+                <h2>📥 Add Communities</h2>
+                <p style="margin-bottom: 1.5rem; color: #666;">
+                    Import senior communities into our WordPress directory to help families find the right place.
+                </p>
+
+                <div class="form-group">
+                    <label>Select Communities File:</label>
+                    <select class="form-control" id="import-csv-file">
+                        <option value="">Loading...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Batch Size:</label>
+                    <input type="number" class="form-control" id="import-batch-size" value="25" min="1" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Limit (optional, leave blank for all):</label>
+                    <input type="number" class="form-control" id="import-limit" placeholder="Leave blank for all">
+                </div>
+
+                <button class="button" id="btn-run-import" onclick="runImport()">
+                    📥 Add Communities
+                </button>
+
+                <div id="import-status" style="margin-top: 1rem;"></div>
+                <div id="import-log" style="margin-top: 1rem;"></div>
+            </div>
+
+            <!-- History Tab -->
+            <div id="tab-history" class="tab-content">
+                <h2>📜 Search History</h2>
+                <div id="history-content">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading history...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Tab -->
+            <div id="tab-test" class="tab-content">
+                <h2>🧪 Test System Connection</h2>
+                <p style="margin-bottom: 1.5rem; color: #666;">
+                    Tests WordPress API, Senior Place login, and all dependencies for the senior living database.
+                </p>
+                
+                <button class="button" id="btn-test" onclick="runTest()">
+                    🧪 Run Tests
+                </button>
+
+                <div id="test-output" style="margin-top: 1rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let statusRefreshInterval = null;
+
+        // Load initial status
+        loadStatus();
+
+        // Refresh status every 10 seconds
+        statusRefreshInterval = setInterval(loadStatus, 10000);
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        async function loadStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+
+                // Update WordPress status
+                const wpStatus = document.getElementById('wp-status');
+                if (data.wordpress.error) {
+                    wpStatus.innerHTML = `
+                        <span class="status-badge status-disconnected">Disconnected</span>
+                        <p style="margin-top: 0.5rem; color: #666;">${data.wordpress.error}</p>
+                    `;
+                } else {
+                    wpStatus.innerHTML = `
+                        <span class="status-badge status-connected">Connected</span>
+                        <div class="stat-number">${data.wordpress.total_listings.toLocaleString()}</div>
+                        <div class="stat-label">Total Listings</div>
+                    `;
+                }
+
+                // Update environment status
+                const envStatus = document.getElementById('env-status');
+                envStatus.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div>
+                            <strong>WordPress:</strong> 
+                            <span class="status-badge ${data.environment.wp_credentials ? 'status-connected' : 'status-disconnected'}">
+                                ${data.environment.wp_credentials ? 'Configured' : 'Missing'}
+                            </span>
+                        </div>
+                        <div>
+                            <strong>Senior Place:</strong> 
+                            <span class="status-badge ${data.environment.sp_credentials ? 'status-connected' : 'status-disconnected'}">
+                                ${data.environment.sp_credentials ? 'Configured' : 'Missing'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+                // Update last run
+                const lastRun = document.getElementById('last-run');
+                if (data.recent_runs && data.recent_runs.length > 0) {
+                    const run = data.recent_runs[0];
+                    lastRun.innerHTML = `
+                        <div class="stat-label">Run: ${run.timestamp}</div>
+                        <div style="margin-top: 0.5rem; display: flex; gap: 1rem;">
+                            <div>
+                                <div style="font-weight: 600; color: #28a745;">${run.stats.new_listings_found}</div>
+                                <div class="stat-label">New</div>
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; color: #667eea;">${run.stats.listings_updated}</div>
+                                <div class="stat-label">Updated</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    lastRun.innerHTML = '<p style="color: #666;">No runs yet</p>';
+                }
+
+                // Update CSV file dropdown
+                const csvSelect = document.getElementById('import-csv-file');
+                if (data.csv_files && data.csv_files.length > 0) {
+                    csvSelect.innerHTML = '<option value="">Select a file...</option>' + 
+                        data.csv_files.map(file => 
+                            `<option value="${file.path}">${file.name} (${file.modified})</option>`
+                        ).join('');
+                } else {
+                    csvSelect.innerHTML = '<option value="">No CSV files found</option>';
+                }
+
+                // Update history table
+                updateHistoryTable(data.recent_runs);
+
+            } catch (error) {
+                console.error('Error loading status:', error);
+            }
+        }
+
+        function updateHistoryTable(runs) {
+            const historyContent = document.getElementById('history-content');
+            
+            if (!runs || runs.length === 0) {
+                historyContent.innerHTML = '<p style="color: #666;">No runs found</p>';
+                return;
+            }
+
+            historyContent.innerHTML = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>🏡 New Communities</th>
+                            <th>🔄 Updated</th>
+                            <th>🏥 Care Type Updates</th>
+                            <th>💰 Pricing Updates</th>
+                            <th>❌ Failed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${runs.map(run => `
+                            <tr>
+                                <td>${run.timestamp}</td>
+                                <td>${run.stats.new_listings_found}</td>
+                                <td>${run.stats.listings_updated}</td>
+                                <td>${run.stats.care_type_updates}</td>
+                                <td>${run.stats.pricing_updates}</td>
+                                <td style="color: ${run.stats.failed_scrapes > 0 ? '#dc3545' : '#666'}">
+                                    ${run.stats.failed_scrapes}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function fetchSingleListing() {
+            const button = document.getElementById('btn-fetch-single');
+            const statusDiv = document.getElementById('single-status');
+            const previewDiv = document.getElementById('single-preview');
+            const url = document.getElementById('single-url').value.trim();
+            
+            if (!url) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Please enter a Senior Place URL</div>';
+                return;
+            }
+            
+            if (!url.includes('seniorplace.com') || !url.includes('/show/')) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Invalid URL. Must be a Senior Place community URL (contains /show/)</div>';
+                return;
+            }
+            
+            button.disabled = true;
+            statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Fetching listing...</p></div>';
+            previewDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/fetch-single-listing', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ url })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const listing = data.listing;
+                    statusDiv.innerHTML = '<div class="alert alert-success">✅ Listing fetched successfully!</div>';
+                    
+                    previewDiv.innerHTML = `
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+                            <h3>${listing.title || 'N/A'}</h3>
+                            <table class="table" style="background: white; margin-top: 1rem;">
+                                <tr>
+                                    <td><strong>Address:</strong></td>
+                                    <td>${listing.address || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>City:</strong></td>
+                                    <td>${listing.city || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>State:</strong></td>
+                                    <td>${listing.state || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ZIP:</strong></td>
+                                    <td>${listing.zip || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Care Types:</strong></td>
+                                    <td>${listing.care_types || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Price:</strong></td>
+                                    <td>${listing.price || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>URL:</strong></td>
+                                    <td><code style="background: #f0f0f0; padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.85rem;">${listing.url}</code></td>
+                                </tr>
+                                ${listing.featured_image ? `
+                                <tr>
+                                    <td><strong>Image:</strong></td>
+                                    <td><a href="${listing.featured_image}" target="_blank">View Image</a></td>
+                                </tr>
+                                ` : ''}
+                            </table>
+                            
+                            <div style="margin-top: 1.5rem;">
+                                <p style="color: #666; margin-bottom: 1rem;">Ready to import? Copy the URL below and use the "Add Communities" tab with a CSV file:</p>
+                                <code style="display: block; background: #f0f0f0; padding: 1rem; border-radius: 8px; word-break: break-all; font-size: 0.9rem;">
+                                    ${listing.url}
+                                </code>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${data.error || 'Failed to fetch listing'}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${error.message}</div>`;
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        async function runScraper() {
+            const button = document.getElementById('btn-run-scraper');
+            const statusDiv = document.getElementById('scraper-status');
+            const logDiv = document.getElementById('scraper-log');
+            
+            // Get selected states
+            const states = Array.from(document.querySelectorAll('input[name="state"]:checked'))
+                .map(cb => cb.value);
+            
+            if (states.length === 0) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Please select at least one state</div>';
+                return;
+            }
+
+            button.disabled = true;
+            statusDiv.innerHTML = '<div class="alert alert-info">Starting scraper...</div>';
+            logDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Waiting for scraper to start...</p></div>';
+
+            try {
+                const response = await fetch('/api/run-scraper', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ states })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusDiv.innerHTML = '<div class="alert alert-success">✅ Scraper started successfully! Watch the logs below...</div>';
+                    monitorProcess('scraper', 'scraper-log', button);
+                } else {
+                    statusDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${data.error}</div>`;
+                    logDiv.innerHTML = '';
+                    button.disabled = false;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${error.message}</div>`;
+                logDiv.innerHTML = '';
+                button.disabled = false;
+            }
+        }
+
+        async function runImport() {
+            const button = document.getElementById('btn-run-import');
+            const statusDiv = document.getElementById('import-status');
+            const logDiv = document.getElementById('import-log');
+            const csvFile = document.getElementById('import-csv-file').value;
+            const batchSize = document.getElementById('import-batch-size').value;
+            const limit = document.getElementById('import-limit').value;
+
+            if (!csvFile) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Please select a CSV file</div>';
+                return;
+            }
+
+            button.disabled = true;
+            statusDiv.innerHTML = '<div class="alert alert-info">Starting import...</div>';
+            logDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Waiting for import to start...</p></div>';
+
+            try {
+                const response = await fetch('/api/run-import', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 
+                        csv_file: csvFile,
+                        batch_size: parseInt(batchSize),
+                        limit: limit ? parseInt(limit) : null
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusDiv.innerHTML = '<div class="alert alert-success">✅ Import started successfully! Watch the logs below...</div>';
+                    monitorProcess('import', 'import-log', button);
+                } else {
+                    statusDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${data.error}</div>`;
+                    logDiv.innerHTML = '';
+                    button.disabled = false;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${error.message}</div>`;
+                logDiv.innerHTML = '';
+                button.disabled = false;
+            }
+        }
+
+        async function monitorProcess(processName, logDivId, button) {
+            const logDiv = document.getElementById(logDivId);
+            let lastLogContent = '';
+
+            const checkStatus = async () => {
+                try {
+                    const response = await fetch(`/api/process-status/${processName}`);
+                    const data = await response.json();
+
+                    if (data.status === 'running') {
+                        // Fetch log
+                        const logResponse = await fetch(`/api/logs/${data.log_file}`);
+                        const logData = await logResponse.json();
+                        
+                        if (logData.content !== lastLogContent) {
+                            lastLogContent = logData.content;
+                            // Check if we already have the stop button
+                            const existingButton = logDiv.querySelector('button.button-danger');
+                            if (!existingButton) {
+                                logDiv.innerHTML = `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 1rem;">
+                                        <h3 style="margin: 0; flex-grow: 1;">📊 Live Log - Process Running...</h3>
+                                        <button class="button button-danger" style="width: auto; padding: 0.75rem 1.5rem; flex-shrink: 0;" onclick="stopProcess('${processName}', '${logDivId}')">
+                                            ⏹️ STOP
+                                        </button>
+                                    </div>
+                                    <div class="log-viewer" id="log-content-${processName}" style="max-height: 600px;">${escapeHtml(logData.content)}</div>
+                                `;
+                            } else {
+                                // Just update the log content
+                                const logContent = logDiv.querySelector(`#log-content-${processName}`);
+                                if (logContent) {
+                                    logContent.textContent = logData.content;
+                                }
+                            }
+                            // Scroll to bottom
+                            const viewer = logDiv.querySelector('.log-viewer');
+                            if (viewer) viewer.scrollTop = viewer.scrollHeight;
+                        }
+
+                        // Check again in 2 seconds
+                        setTimeout(checkStatus, 2000);
+                    } else {
+                        // Process finished
+                        button.disabled = false;
+                        
+                        // Fetch final log
+                        const logResponse = await fetch(`/api/logs/${data.log_file}`);
+                        const logData = await logResponse.json();
+                        
+                        logDiv.innerHTML = `
+                            <div class="alert ${data.status === 'completed' ? 'alert-success' : 'alert-danger'}">
+                                ${data.status === 'completed' ? '✅ Process completed successfully!' : '❌ Process failed or was stopped!'}
+                            </div>
+                            <h3>Full Log:</h3>
+                            <div class="log-viewer">${logData.content}</div>
+                        `;
+
+                        // Reload status
+                        setTimeout(loadStatus, 2000);
+                    }
+                } catch (error) {
+                    console.error('Error monitoring process:', error);
+                }
+            };
+
+            checkStatus();
+        }
+
+        async function stopProcess(processName, logDivId) {
+            const logDiv = document.getElementById(logDivId);
+            const button = logDiv.querySelector('button.button-danger');
+            if (button) button.disabled = true;
+            
+            try {
+                const response = await fetch(`/api/stop-process/${processName}`, { method: 'POST' });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    logDiv.innerHTML = `
+                        <div class="alert alert-danger" style="margin-bottom: 1rem;">
+                            🛑 <strong>Process Stopped</strong> - User requested termination
+                        </div>
+                        <p style="color: #666;">The ${processName} process has been terminated.</p>
+                    `;
+                    
+                    // Reload status after a moment
+                    setTimeout(loadStatus, 1500);
+                } else {
+                    logDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                logDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        async function runTest() {
+            const button = document.getElementById('btn-test');
+            const output = document.getElementById('test-output');
+
+            button.disabled = true;
+            output.innerHTML = '<div class="loading"><div class="spinner"></div><p>Running tests... (this takes about 30 seconds)</p></div>';
+
+            try {
+                const response = await fetch('/api/test-connection');
+                const data = await response.json();
+                
+                // Handle error response
+                if (data.error) {
+                    output.innerHTML = `<div class="alert alert-danger">❌ Error: ${escapeHtml(data.error)}</div>`;
+                    return;
+                }
+
+                const testOutput = data.output || data.errors || 'No output received';
+                const status = data.exit_code === 0 ? 'success' : 'danger';
+                output.innerHTML = `
+                    <div class="alert alert-${status}">
+                        ${data.exit_code === 0 ? '✅ All tests passed!' : '❌ Some tests failed'}
+                    </div>
+                    <h3>Test Output:</h3>
+                    <div class="log-viewer">${escapeHtml(testOutput)}</div>
+                    ${data.errors && data.errors.trim() ? `<h3>Errors:</h3><div class="log-viewer" style="color: #ff6b6b;">${escapeHtml(data.errors)}</div>` : ''}
+                `;
+            } catch (error) {
+                output.innerHTML = `<div class="alert alert-danger">❌ Error: ${escapeHtml(error.message)}</div>`;
+            } finally {
+                button.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
+

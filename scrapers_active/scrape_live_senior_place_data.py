@@ -267,8 +267,8 @@ async def scrape_all_live_data(username, password, limit=None):
 
 def main():
     parser = argparse.ArgumentParser(description="Scrape live Senior Place data")
-    parser.add_argument('--username', default='allison@aplaceforseniors.org', help='Senior Place username')
-    parser.add_argument('--password', default='Hugomax2023!', help='Senior Place password')
+    parser.add_argument('--username', default=os.getenv('SP_USERNAME', ''), help='Senior Place username (or set SP_USERNAME env)')
+    parser.add_argument('--password', default=os.getenv('SP_PASSWORD', ''), help='Senior Place password (or set SP_PASSWORD env)')
     parser.add_argument('--limit', type=int, help='Limit for testing (default: all)')
     
     args = parser.parse_args()

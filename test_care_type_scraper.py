@@ -5,8 +5,13 @@ import asyncio
 import csv
 from playwright.async_api import async_playwright
 
-USERNAME = "allison@aplaceforseniors.org"
-PASSWORD = "Hugomax2025!"
+import os
+USERNAME = os.getenv("SP_USERNAME", "")
+PASSWORD = os.getenv("SP_PASSWORD", "")
+
+if not USERNAME or not PASSWORD:
+    print("❌ Error: Set SP_USERNAME and SP_PASSWORD environment variables")
+    exit(1)
 
 async def test_scraper():
     async with async_playwright() as p:

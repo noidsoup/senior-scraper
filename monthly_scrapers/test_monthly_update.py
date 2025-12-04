@@ -82,17 +82,20 @@ class UpdateSystemTester:
         """Test if required files and directories exist"""
         print("\n📁 Testing File Structure...")
         
+        # Get the repo root (parent of monthly_scrapers or current dir)
+        current = Path(__file__).parent
+        root = current.parent if current.name == 'monthly_scrapers' else current
+        
         required_files = [
-            'monthly_update_orchestrator.py',
-            'run_monthly_update.sh',
-            'send_monthly_report.py',
-            'scrapers_active/scrape_live_senior_place_data.py',
-            'scrapers_active/update_prices_from_seniorplace_export.py',
+            root / 'monthly_scrapers' / 'monthly_update_orchestrator.py',
+            root / 'monthly_scrapers' / 'send_monthly_report.py',
+            root / 'scrapers_active' / 'scrape_live_senior_place_data.py',
+            root / 'scrapers_active' / 'update_prices_from_seniorplace_export.py',
         ]
         
         for file in required_files:
             file_path = Path(file)
-            self.test(f"{file} exists", file_path.exists(),
+            self.test(f"{file.name} exists", file_path.exists(),
                      f"File not found: {file}")
         
         # Check if directories can be created
@@ -248,6 +251,12 @@ class UpdateSystemTester:
 
 async def main():
     """Run all tests"""
+    # Set UTF-8 encoding for Windows console
+    if os.name == 'nt':
+        import sys
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    
     print("🧪 MONTHLY UPDATE SYSTEM - TESTING")
     print("=" * 60)
     

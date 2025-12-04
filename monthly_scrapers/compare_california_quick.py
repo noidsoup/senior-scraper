@@ -6,6 +6,7 @@ Find NEW California listings not in WordPress yet
 
 import json
 import csv
+import os
 import requests
 
 # Fetch WordPress listings
@@ -16,7 +17,7 @@ while True:
     response = requests.get(
         "https://aplaceforseniorscms.kinsta.cloud/wp-json/wp/v2/listing",
         params={'per_page': 100, 'page': page},
-        auth=('nicholas_editor', '3oiO dmah Ao7w Y8M7 5RKF rVrk'),
+        auth=(os.getenv('WP_USER', 'nicholas_editor'), os.getenv('WP_PASSWORD', '')),
         timeout=30
     )
     

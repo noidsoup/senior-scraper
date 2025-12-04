@@ -10,8 +10,14 @@ import random
 from playwright.async_api import async_playwright
 from datetime import datetime
 
-USERNAME = "allison@aplaceforseniors.org"
-PASSWORD = "Hugomax2025!"
+import os
+USERNAME = os.getenv("SP_USERNAME", "")
+PASSWORD = os.getenv("SP_PASSWORD", "")
+
+if not USERNAME or not PASSWORD:
+    print("❌ Error: Set SP_USERNAME and SP_PASSWORD environment variables")
+    print("   Or load from wp_config.env first")
+    exit(1)
 
 TYPE_TO_CANONICAL = {
     "Assisted Living Home": "Assisted Living Home",
