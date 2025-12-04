@@ -1,1 +1,0 @@
-docs/FOLDER_STRUCTURE.md
