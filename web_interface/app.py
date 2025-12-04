@@ -276,9 +276,9 @@ def api_run_scraper():
     try:
         project_root = get_project_root()
         
-        # Start scraper in background
+        # Start scraper in background (use -u for unbuffered output)
         cmd = [
-            sys.executable,
+            sys.executable, '-u',
             str(project_root / 'monthly_scrapers' / 'monthly_update_orchestrator.py'),
             '--full-update',
             '--states'] + states + [
@@ -297,13 +297,15 @@ def api_run_scraper():
         # Pass environment variables to subprocess
         env = os.environ.copy()
         env['PYTHONIOENCODING'] = 'utf-8'
+        env['PYTHONUNBUFFERED'] = '1'
         
         process = subprocess.Popen(
             cmd,
             stdout=log_handle,
             stderr=subprocess.STDOUT,
             cwd=project_root,
-            env=env
+            env=env,
+            bufsize=1  # Line buffered
         )
         
         running_processes['scraper'] = {
@@ -389,9 +391,9 @@ def api_run_import():
         if not csv_path.exists():
             return jsonify({'error': 'CSV file not found'}), 404
         
-        # Build command
+        # Build command (use -u for unbuffered output)
         cmd = [
-            sys.executable,
+            sys.executable, '-u',
             str(project_root / 'import_to_wordpress_api_safe.py'),
             str(csv_path),
             '--batch-size', str(batch_size)
@@ -411,6 +413,7 @@ def api_run_import():
         # Pass environment variables to subprocess
         env = os.environ.copy()
         env['PYTHONIOENCODING'] = 'utf-8'
+        env['PYTHONUNBUFFERED'] = '1'
         
         process = subprocess.Popen(
             cmd,
@@ -418,7 +421,8 @@ def api_run_import():
             stderr=subprocess.STDOUT,
             stdin=subprocess.PIPE,
             cwd=project_root,
-            env=env
+            env=env,
+            bufsize=1  # Line buffered
         )
         # Auto-confirm with 'yes'
         process.stdin.write(b'yes\n')
