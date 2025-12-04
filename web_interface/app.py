@@ -45,6 +45,58 @@ app.config['SECRET_KEY'] = 'senior-scraper-dashboard-2024'
 # Track running processes
 running_processes = {}
 
+# File to persist process state across reloads
+PROCESS_STATE_FILE = Path(__file__).parent / 'logs' / 'process_state.json'
+
+def save_process_state():
+    """Save running process info to disk for reload recovery"""
+    state = {}
+    for name, info in running_processes.items():
+        state[name] = {
+            'pid': info['process'].pid if info.get('process') else None,
+            'log_file': info.get('log_file'),
+            'started': info.get('started')
+        }
+    PROCESS_STATE_FILE.parent.mkdir(exist_ok=True)
+    with open(PROCESS_STATE_FILE, 'w') as f:
+        json.dump(state, f)
+
+def load_process_state():
+    """Load and verify running processes from disk"""
+    if not PROCESS_STATE_FILE.exists():
+        return {}
+    
+    try:
+        with open(PROCESS_STATE_FILE, 'r') as f:
+            state = json.load(f)
+        
+        # Check which processes are still alive
+        import psutil
+        active = {}
+        for name, info in state.items():
+            pid = info.get('pid')
+            if pid:
+                try:
+                    proc = psutil.Process(pid)
+                    if proc.is_running() and 'python' in proc.name().lower():
+                        active[name] = {
+                            'pid': pid,
+                            'log_file': info.get('log_file'),
+                            'started': info.get('started'),
+                            'recovered': True
+                        }
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    pass
+        
+        # Update state file with only active processes
+        with open(PROCESS_STATE_FILE, 'w') as f:
+            json.dump(active, f)
+        
+        return active
+    except Exception as e:
+        print(f"Error loading process state: {e}")
+        return {}
+
 def get_project_root():
     """Get the project root directory"""
     return Path(__file__).parent.parent
@@ -141,12 +193,17 @@ def api_status():
         'sp_credentials': bool(os.getenv('SP_USERNAME')) and bool(os.getenv('SP_PASSWORD')),
     }
     
+    # Check for recovered processes from disk (survives page reload)
+    recovered = load_process_state()
+    active_processes = list(running_processes.keys()) + list(recovered.keys())
+    
     return jsonify({
         'recent_runs': recent_runs,
         'wordpress': wp_stats,
         'csv_files': csv_files,
         'environment': env_status,
-        'running_processes': list(running_processes.keys())
+        'running_processes': list(set(active_processes)),
+        'recovered_processes': recovered
     })
 
 @app.route('/api/fetch-single-listing', methods=['POST'])
@@ -315,6 +372,9 @@ def api_run_scraper():
             'started': datetime.now().isoformat()
         }
         
+        # Persist to disk for reload recovery
+        save_process_state()
+        
         return jsonify({
             'status': 'started',
             'log_file': str(log_file.relative_to(project_root))
@@ -446,31 +506,44 @@ def api_run_import():
 @app.route('/api/process-status/<process_name>')
 def api_process_status(process_name):
     """Check status of running process"""
-    if process_name not in running_processes:
-        return jsonify({'status': 'not_running'})
+    # First check in-memory processes
+    if process_name in running_processes:
+        proc_info = running_processes[process_name]
+        process = proc_info['process']
+        
+        # Check if still running
+        if process.poll() is None:
+            status = 'running'
+        else:
+            status = 'completed' if process.returncode == 0 else 'failed'
+            # Close log file handle if present
+            if 'log_handle' in proc_info and proc_info['log_handle']:
+                try:
+                    proc_info['log_handle'].close()
+                except:
+                    pass
+            # Clean up
+            del running_processes[process_name]
+            save_process_state()
+        
+        return jsonify({
+            'status': status,
+            'log_file': proc_info['log_file'],
+            'started': proc_info['started']
+        })
     
-    proc_info = running_processes[process_name]
-    process = proc_info['process']
+    # Check recovered processes from disk (survives page reload)
+    recovered = load_process_state()
+    if process_name in recovered:
+        proc_info = recovered[process_name]
+        return jsonify({
+            'status': 'running',
+            'log_file': proc_info['log_file'],
+            'started': proc_info['started'],
+            'recovered': True
+        })
     
-    # Check if still running
-    if process.poll() is None:
-        status = 'running'
-    else:
-        status = 'completed' if process.returncode == 0 else 'failed'
-        # Close log file handle if present
-        if 'log_handle' in proc_info and proc_info['log_handle']:
-            try:
-                proc_info['log_handle'].close()
-            except:
-                pass
-        # Clean up
-        del running_processes[process_name]
-    
-    return jsonify({
-        'status': status,
-        'log_file': proc_info['log_file'],
-        'started': proc_info['started']
-    })
+    return jsonify({'status': 'not_running'})
 
 @app.route('/api/stop-process/<process_name>', methods=['POST'])
 def api_stop_process(process_name):
