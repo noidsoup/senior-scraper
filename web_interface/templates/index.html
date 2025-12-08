@@ -672,8 +672,16 @@
                                     <td>${listing.care_types || 'N/A'}</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Price:</strong></td>
-                                    <td>${listing.price || 'N/A'}</td>
+                                    <td><strong>Monthly Base Price:</strong></td>
+                                    <td>${listing.monthly_base_price || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>High End:</strong></td>
+                                    <td>${listing.price_high_end || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Second Person Fee:</strong></td>
+                                    <td>${listing.second_person_fee || 'N/A'}</td>
                                 </tr>
                                 <tr>
                                     <td><strong>URL:</strong></td>
@@ -686,6 +694,13 @@
                                 </tr>
                                 ` : ''}
                             </table>
+
+                            ${listing.description ? `
+                            <div style="margin-top: 1rem;">
+                                <h4 style="margin-bottom: 0.5rem;">Description</h4>
+                                <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid #eee;">${escapeHtml(listing.description)}</div>
+                            </div>
+                            ` : ''}
                             
                             <div style="margin-top: 1.5rem;">
                                 <p style="color: #666; margin-bottom: 1rem;">Ready to import? Copy the URL below and use the "Add Communities" tab with a CSV file:</p>
@@ -842,6 +857,7 @@
                         
                         if (logData.content !== lastLogContent) {
                             lastLogContent = logData.content;
+                            const orderedLog = (logData.content || '').split(/\r?\n/).join('\n');
                             // Check if we already have the stop button
                             const existingButton = logDiv.querySelector('button.button-danger');
                             if (!existingButton) {
@@ -852,13 +868,13 @@
                                             ⏹️ STOP
                                         </button>
                                     </div>
-                                    <div class="log-viewer" id="log-content-${processName}" style="max-height: 600px;">${escapeHtml(logData.content)}</div>
+                                    <div class="log-viewer" id="log-content-${processName}" style="max-height: 600px; white-space: pre-wrap;">${escapeHtml(orderedLog)}</div>
                                 `;
                             } else {
                                 // Just update the log content
                                 const logContent = logDiv.querySelector(`#log-content-${processName}`);
                                 if (logContent) {
-                                    logContent.textContent = logData.content;
+                                    logContent.textContent = orderedLog;
                                 }
                             }
                             // Scroll to bottom
@@ -875,13 +891,14 @@
                         // Fetch final log
                         const logResponse = await fetch(`/api/logs/${data.log_file}`);
                         const logData = await logResponse.json();
+                        const orderedLog = (logData.content || '').split(/\r?\n/).join('\n');
                         
                         logDiv.innerHTML = `
                             <div class="alert ${data.status === 'completed' ? 'alert-success' : 'alert-danger'}">
                                 ${data.status === 'completed' ? '✅ Process completed successfully!' : '❌ Process failed or was stopped!'}
                             </div>
                             <h3>Full Log:</h3>
-                            <div class="log-viewer">${logData.content}</div>
+                            <div class="log-viewer" style="white-space: pre-wrap;">${escapeHtml(orderedLog)}</div>
                         `;
 
                         // Reload status

@@ -18,6 +18,8 @@ import csv
 import json
 import argparse
 import os
+import time
+import json
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
@@ -56,6 +58,32 @@ class MonthlyUpdateOrchestrator:
         
         # Timestamp for this run
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.cache_dir = Path(".cache")
+        self.cache_dir.mkdir(exist_ok=True)
+        self.wp_cache_file = self.cache_dir / "wp_listings_cache.json"
+        self.wp_cache_ttl = int(os.getenv("WP_CACHE_TTL_SECONDS", "3600"))
+        self.disable_wp_cache = os.getenv("WP_CACHE_DISABLE", "0") == "1"
+
+    # ---------- Checkpoint helpers ----------
+    def _checkpoint_default_path(self) -> Path:
+        return Path("monthly_updates") / self.timestamp / "resume_checkpoint.json"
+
+    def _load_checkpoint(self, checkpoint_path: Path) -> Optional[Dict]:
+        try:
+            with open(checkpoint_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            self.log(f"Checkpoint not found: {checkpoint_path}", "WARNING")
+            return None
+        except Exception as e:
+            self.log(f"Failed to load checkpoint {checkpoint_path}: {e}", "ERROR")
+            return None
+
+    def _save_checkpoint(self, checkpoint_path: Path, data: Dict):
+        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(checkpoint_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+        self.log(f"Checkpoint saved to {checkpoint_path}", "INFO")
         
     def log(self, message: str, level: str = "INFO"):
         """Log with timestamp"""
@@ -74,6 +102,22 @@ class MonthlyUpdateOrchestrator:
         Fetch all current listings from WordPress via REST API
         Returns dict of {source_url: listing_data}
         """
+        # Serve from cache when fresh
+        if not self.disable_wp_cache and self.wp_cache_file.exists():
+            try:
+                with open(self.wp_cache_file, "r", encoding="utf-8") as f:
+                    cached = json.load(f)
+                ts = cached.get("timestamp", 0)
+                age = time.time() - ts
+                if age <= self.wp_cache_ttl and cached.get("wp_url") == self.wp_url:
+                    listings_by_url = cached.get("data", {})
+                    self.log(f"Using cached WordPress listings (age {int(age)}s, {len(listings_by_url)} URLs)", "SUCCESS")
+                    return listings_by_url
+                else:
+                    self.log("Cache expired or WP URL changed; fetching fresh", "INFO")
+            except Exception as e:
+                self.log(f"Cache read failed, fetching fresh: {e}", "WARNING")
+
         self.log("Fetching current WordPress listings via REST API...")
         
         try:
@@ -135,6 +179,18 @@ class MonthlyUpdateOrchestrator:
                     listings_by_url[seniorly_url] = listing
             
             self.log(f"Loaded {len(all_listings)} listings from WordPress", "SUCCESS")
+
+            # Write cache
+            try:
+                with open(self.wp_cache_file, "w", encoding="utf-8") as f:
+                    json.dump({
+                        "timestamp": time.time(),
+                        "wp_url": self.wp_url,
+                        "data": listings_by_url
+                    }, f)
+            except Exception as e:
+                self.log(f"Failed to write cache: {e}", "WARNING")
+
             return listings_by_url
             
         except Exception as e:
@@ -266,7 +322,7 @@ class MonthlyUpdateOrchestrator:
     
     async def enrich_listing_details(self, listings: List[Dict]) -> List[Dict]:
         """
-        Enrich basic listings with detailed info: pricing, care types, amenities
+        Enrich basic listings with detailed info: pricing, care types, description
         """
         from playwright.async_api import async_playwright
         
@@ -318,16 +374,17 @@ class MonthlyUpdateOrchestrator:
                         }
                     """)
                     
-                    # Extract pricing
+                    # Extract pricing + description
                     pricing = await page.evaluate("""
                         () => {
                             const result = {};
                             
-                            // Find Monthly Base Price
-                            const labels = document.querySelectorAll('.form-group');
-                            for (const group of labels) {
-                                const labelText = group.textContent;
+                            // Find form groups by label text
+                            const groups = document.querySelectorAll('.form-group');
+                            for (const group of groups) {
+                                const labelText = group.textContent || '';
                                 const input = group.querySelector('input');
+                                const textarea = group.querySelector('textarea');
                                 
                                 if (labelText.includes('Monthly Base Price') && input) {
                                     result.monthly_base_price = input.value;
@@ -337,6 +394,10 @@ class MonthlyUpdateOrchestrator:
                                 }
                                 if (labelText.includes('Second Person Fee') && input) {
                                     result.second_person_fee = input.value;
+                                }
+                                if (labelText.includes('Description') && (textarea || input)) {
+                                    const source = textarea || input;
+                                    result.description = (source.value || source.textContent || '').trim();
                                 }
                             }
                             
@@ -452,7 +513,7 @@ class MonthlyUpdateOrchestrator:
             
             fieldnames = [
                 'title', 'address', 'city', 'state', 'zip', 
-                'senior_place_url', 'featured_image', 
+                'senior_place_url', 'featured_image', 'description',
                 'price', 'normalized_types', 'care_types_raw',
                 'price_high_end', 'second_person_fee'
             ]
@@ -473,6 +534,7 @@ class MonthlyUpdateOrchestrator:
                         'zip': address_parts[2].strip().split()[-1] if len(address_parts) > 2 else '',
                         'senior_place_url': listing.get('url', ''),
                         'featured_image': listing.get('featured_image', ''),
+                        'description': listing.get('description', ''),
                         'price': listing.get('monthly_base_price', '').replace('$', '').replace(',', ''),
                         'normalized_types': map_care_types(listing.get('care_types', [])),
                         'care_types_raw': ', '.join(listing.get('care_types', [])),
@@ -525,24 +587,87 @@ class MonthlyUpdateOrchestrator:
         
         return output_dir
     
-    async def run_full_update(self, states: List[Tuple[str, str]]):
+    async def run_full_update(self, states: List[Tuple[str, str]], resume_data: Optional[Dict] = None,
+                              checkpoint_file: Optional[Path] = None):
         """
-        Run complete monthly update process
+        Run complete monthly update process with optional resume support.
         states: List of (state_code, state_name) tuples, e.g., [('AZ', 'Arizona'), ('CA', 'California')]
+        resume_data: Data loaded from a previous checkpoint (dict)
+        checkpoint_file: Optional path to the checkpoint file (useful for tests)
         """
         self.log("=" * 80)
         self.log("MONTHLY UPDATE ORCHESTRATOR - FULL UPDATE", "SUCCESS")
         self.log("=" * 80)
+
+        # Prepare checkpoint bookkeeping
+        checkpoint_path = checkpoint_file or self._checkpoint_default_path()
+        checkpoint_dir = checkpoint_path.parent
+        raw_dir = checkpoint_dir / "raw"
+        raw_dir.mkdir(parents=True, exist_ok=True)
+
+        # Determine states_remaining and states_completed
+        states_map = {code: name for code, name in states}
+        if resume_data:
+            self.timestamp = resume_data.get("timestamp", self.timestamp)
+            states_completed_codes: List[str] = resume_data.get("states_completed", [])
+            states_remaining_codes: List[str] = resume_data.get("states_remaining", list(states_map.keys()))
+            scraped_files: Dict[str, str] = resume_data.get("scraped_files", {})
+            self.log(f"Resuming from checkpoint {checkpoint_path}", "INFO")
+        else:
+            states_completed_codes = []
+            states_remaining_codes = list(states_map.keys())
+            scraped_files = {}
+
+        # Load already-scraped states from checkpoint to avoid re-scraping
+        all_scraped_listings: List[Dict] = []
+        for code in states_completed_codes:
+            path_str = scraped_files.get(code)
+            if not path_str:
+                continue
+            path = Path(path_str)
+            if not path.exists():
+                self.log(f"Checkpoint missing raw file for {code}, will re-scrape", "WARNING")
+                states_remaining_codes.append(code)
+                continue
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    state_listings = json.load(f)
+                all_scraped_listings.extend(state_listings)
+                self.stats['total_processed'] += len(state_listings)
+                self.log(f"Loaded {len(state_listings)} cached listings for {code}", "INFO")
+            except Exception as e:
+                self.log(f"Failed to load cached {code} listings, will re-scrape: {e}", "WARNING")
+                states_remaining_codes.append(code)
+
+        # Deduplicate any codes if we had to re-add
+        states_remaining_codes = list(dict.fromkeys(states_remaining_codes))
         
         # Step 1: Fetch current WordPress data
         self.current_wp_listings = self.fetch_current_wordpress_listings()
         
         # Step 2: Scrape all states
-        all_scraped_listings = []
-        for state_code, state_name in states:
+        for state_code in states_remaining_codes:
+            state_name = states_map.get(state_code, state_code)
             state_listings = await self.scrape_seniorplace_state(state_code, state_name)
             all_scraped_listings.extend(state_listings)
             self.stats['total_processed'] += len(state_listings)
+
+            # Persist raw listings for resume
+            raw_file = raw_dir / f"{state_code}.json"
+            with open(raw_file, "w", encoding="utf-8") as f:
+                json.dump(state_listings, f, indent=2, ensure_ascii=False)
+
+            # Update checkpoint after each state
+            states_completed_codes.append(state_code)
+            scraped_files[state_code] = str(raw_file)
+            remaining = [c for c in states_map.keys() if c not in states_completed_codes]
+            checkpoint_payload = {
+                "timestamp": self.timestamp,
+                "states_completed": states_completed_codes,
+                "states_remaining": remaining,
+                "scraped_files": scraped_files,
+            }
+            self._save_checkpoint(checkpoint_path, checkpoint_payload)
         
         # Step 3: Enrich with detailed data
         enriched_listings = await self.enrich_listing_details(all_scraped_listings)
@@ -568,6 +693,18 @@ class MonthlyUpdateOrchestrator:
         self.log(f"📁 Output directory: {output_dir}")
         self.log("=" * 80)
         
+        # Mark checkpoint as complete
+        if checkpoint_path:
+            final_payload = {
+                "timestamp": self.timestamp,
+                "states_completed": list(states_map.keys()),
+                "states_remaining": [],
+                "scraped_files": scraped_files,
+                "status": "complete",
+                "output_dir": str(output_dir),
+            }
+            self._save_checkpoint(checkpoint_path, final_payload)
+
         return output_dir
 
 
@@ -597,6 +734,8 @@ async def main():
                         help='Senior Place username')
     parser.add_argument('--sp-password', default=None,
                         help='Senior Place password (or set SP_PASSWORD env)')
+    parser.add_argument('--resume-checkpoint', default=None,
+                        help='Path to resume_checkpoint.json from a prior run')
     
     args = parser.parse_args()
     
@@ -614,6 +753,21 @@ async def main():
     if not sp_password:
         raise SystemExit("❌ Missing Senior Place password. Provide --sp-password or set SP_PASSWORD in environment.")
 
+    resume_data = None
+    checkpoint_path = None
+    if args.resume_checkpoint:
+        checkpoint_path = Path(args.resume_checkpoint)
+        tmp_orch = MonthlyUpdateOrchestrator(
+            wp_url=args.wp_url,
+            wp_username=args.wp_username,
+            wp_password=args.wp_password,
+            sp_username=args.sp_username,
+            sp_password=sp_password
+        )
+        resume_data = tmp_orch._load_checkpoint(checkpoint_path)
+        if not resume_data:
+            raise SystemExit(f"❌ Could not load checkpoint: {checkpoint_path}")
+
     orchestrator = MonthlyUpdateOrchestrator(
         wp_url=args.wp_url,
         wp_username=args.wp_username,
@@ -622,8 +776,11 @@ async def main():
         sp_password=sp_password
     )
     
+    if resume_data:
+        orchestrator.timestamp = resume_data.get("timestamp", orchestrator.timestamp)
+    
     if args.full_update or (not args.new_only and not args.updates_only):
-        await orchestrator.run_full_update(states)
+        await orchestrator.run_full_update(states, resume_data=resume_data, checkpoint_file=checkpoint_path)
     elif args.new_only:
         # TODO: Implement new-only mode
         print("New-only mode not yet implemented")

@@ -220,6 +220,11 @@ def api_fetch_single_listing():
         from playwright.async_api import async_playwright
         import asyncio
         
+        sp_user = os.getenv('SP_USERNAME')
+        sp_pass = os.getenv('SP_PASSWORD')
+        if not sp_user or not sp_pass:
+            return jsonify({'error': 'Senior Place credentials not set on server'}), 400
+        
         async def get_listing_details():
             """Fetch listing details from Senior Place"""
             async with async_playwright() as p:
@@ -228,64 +233,114 @@ def api_fetch_single_listing():
                 page = await context.new_page()
                 
                 try:
-                    await page.goto(url, timeout=30000)
-                    await page.wait_for_timeout(2000)
+                    # Login to Senior Place to access attributes
+                    await page.goto("https://app.seniorplace.com/login", timeout=30000)
+                    await page.fill('input[name="email"]', sp_user)
+                    await page.fill('input[name="password"]', sp_pass)
+                    await page.click('button[type="submit"]')
+                    await page.wait_for_selector('text=Communities', timeout=15000)
+                    
+                    await page.goto(url, timeout=30000, wait_until="networkidle")
+                    await page.wait_for_timeout(1500)
                     
                     # Extract title
                     title_el = await page.query_selector('h1')
                     title = await title_el.inner_text() if title_el else 'Unknown'
                     
                     # Extract address info
-                    address = 'N/A'
-                    city = 'N/A'
-                    state = 'N/A'
-                    zip_code = 'N/A'
+                    address = ''
+                    city = ''
+                    state = ''
+                    zip_code = ''
                     
                     address_els = await page.query_selector_all('address p')
                     if len(address_els) >= 1:
-                        address = await address_els[0].inner_text()
+                        address = (await address_els[0].inner_text()) or ''
                     if len(address_els) >= 2:
-                        location = await address_els[1].inner_text()
+                        location = (await address_els[1].inner_text()) or ''
                         parts = location.split(',')
                         if len(parts) >= 2:
                             city = parts[0].strip()
                             state_zip = parts[1].strip().split()
-                            state = state_zip[0] if len(state_zip) > 0 else 'N/A'
-                            zip_code = state_zip[1] if len(state_zip) > 1 else 'N/A'
+                            if len(state_zip) > 0:
+                                state = state_zip[0]
+                            if len(state_zip) > 1:
+                                zip_code = state_zip[1]
                     
                     # Extract care types
-                    care_types = 'N/A'
-                    attributes_btn = await page.query_selector('button:has-text("Attributes"), a:has-text("Attributes")')
-                    if attributes_btn:
-                        await attributes_btn.click()
-                        await page.wait_for_timeout(500)
-                        checked_boxes = await page.query_selector_all('input[type="checkbox"][checked]')
-                        types = []
-                        for checkbox in checked_boxes:
-                            try:
-                                parent = await checkbox.evaluate_handle('el => el.closest("label")')
-                                if parent:
-                                    text = await parent.inner_text()
-                                    if any(keyword in text for keyword in ['Living', 'Care', 'Nursing', 'Memory', 'Hospice']):
-                                        types.append(text.strip())
-                            except:
-                                pass
-                        if types:
-                            care_types = ', '.join(types)
+                    # Switch to attributes page for full detail
+                    attrs_url = url.rstrip('/') + '/attributes'
+                    await page.goto(attrs_url, wait_until="networkidle", timeout=20000)
+                    await page.wait_for_timeout(1000)
                     
-                    # Extract featured image
-                    featured_image = 'N/A'
-                    img_el = await page.query_selector('img[alt*="community"], img[alt*="facility"]')
+                    care_types = []
+                    pricing_and_desc = {}
+                    
+                    try:
+                        care_types = await page.evaluate("""
+                            () => {
+                                const types = [];
+                                const labels = Array.from(document.querySelectorAll("label.inline-flex"));
+                                
+                                for (const label of labels) {
+                                    const textEl = label.querySelector("div.ml-2");
+                                    const input = label.querySelector('input[type="checkbox"]');
+                                    
+                                    if (!textEl || !input) continue;
+                                    if (!input.checked) continue;
+                                    
+                                    const name = (textEl.textContent || "").trim();
+                                    if (name) types.push(name);
+                                }
+                                
+                                return types;
+                            }
+                        """)
+                    except Exception:
+                        care_types = []
+                    
+                    try:
+                        pricing_and_desc = await page.evaluate("""
+                            () => {
+                                const result = {};
+                                const groups = document.querySelectorAll('.form-group');
+                                for (const group of groups) {
+                                    const labelText = group.textContent || '';
+                                    const input = group.querySelector('input');
+                                    const textarea = group.querySelector('textarea');
+                                    
+                                    if (labelText.includes('Monthly Base Price') && input) {
+                                        result.monthly_base_price = input.value;
+                                    }
+                                    if (labelText.includes('High End') && input) {
+                                        result.price_high_end = input.value;
+                                    }
+                                    if (labelText.includes('Second Person Fee') && input) {
+                                        result.second_person_fee = input.value;
+                                    }
+                                    if (labelText.includes('Description') && (textarea || input)) {
+                                        const source = textarea || input;
+                                        result.description = (source.value || source.textContent || '').trim();
+                                    }
+                                }
+                                return result;
+                            }
+                        """)
+                    except Exception:
+                        pricing_and_desc = {}
+                    
+                    # Extract featured image (best-effort from main page)
+                    await page.goto(url, wait_until="networkidle", timeout=20000)
+                    await page.wait_for_timeout(500)
+                    featured_image = ''
+                    img_el = await page.query_selector("img")
                     if img_el:
                         src = await img_el.get_attribute('src')
                         if src:
-                            featured_image = src if src.startswith('http') else f"https://app.seniorplace.com{src}"
-                    
-                    # Extract price
-                    price = 'N/A'
-                    price_el = await page.query_selector('text=/\\$.*\\/month/')
-                    if price_el:
-                        price = await price_el.inner_text()
+                            if src.startswith('/api/files/'):
+                                featured_image = f"https://placement-crm-cdn.s3.us-west-2.amazonaws.com{src}"
+                            else:
+                                featured_image = src if src.startswith('http') else f"https://app.seniorplace.com{src}"
                     
                     await browser.close()
                     
@@ -295,8 +350,11 @@ def api_fetch_single_listing():
                         'city': city.strip(),
                         'state': state.strip(),
                         'zip': zip_code.strip(),
-                        'care_types': care_types,
-                        'price': price,
+                        'care_types': ', '.join(care_types) if care_types else '',
+                        'monthly_base_price': pricing_and_desc.get('monthly_base_price', ''),
+                        'price_high_end': pricing_and_desc.get('price_high_end', ''),
+                        'second_person_fee': pricing_and_desc.get('second_person_fee', ''),
+                        'description': pricing_and_desc.get('description', ''),
                         'url': url,
                         'featured_image': featured_image
                     }

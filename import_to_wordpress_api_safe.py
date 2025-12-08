@@ -26,6 +26,7 @@ import argparse
 import sys
 import json
 import time
+import json
 import re
 import os
 import mimetypes
@@ -56,6 +57,10 @@ DEFAULT_BATCH_SIZE = 50  # Process in small batches
 RATE_LIMIT_DELAY = 2.0  # Seconds between requests (increased to reduce server load)
 CHECKPOINT_INTERVAL = 25  # Save checkpoint every N listings
 BATCH_PAUSE = 10  # Seconds to pause between batches
+WP_CACHE_TTL = int(os.getenv("WP_CACHE_TTL_SECONDS", "3600"))
+WP_CACHE_DISABLE = os.getenv("WP_CACHE_DISABLE", "0") == "1"
+WP_CACHE_FILE = Path(".cache") / "wp_existing_urls_cache.json"
+WP_CACHE_FILE.parent.mkdir(exist_ok=True)
 
 # Care type mapping to taxonomy term IDs
 CARE_TYPE_MAPPING = {
@@ -235,6 +240,57 @@ def get_care_type_term_ids(care_types_str):
     return term_ids
 
 
+def normalize_listing_row(row: dict) -> dict:
+    """
+    Normalize a CSV row from the orchestrator into the shape expected by the
+    importer. Handles newline-heavy addresses, maps column names, and normalizes
+    care type strings.
+    """
+    listing = dict(row)
+
+    # Column name normalization
+    listing['url'] = row.get('senior_place_url') or row.get('url') or ''
+    raw_care = row.get('normalized_types') or row.get('care_types_raw') or row.get('care_types') or ''
+    care_parts = [ct.strip() for ct in re.split(r'[,;/]+', raw_care) if ct.strip()]
+    listing['care_types'] = ', '.join(care_parts)
+    listing['featured_image'] = row.get('featured_image') or ''
+    listing['description'] = row.get('description') or ''
+
+    # Address normalization (handle newline-delimited addresses from Senior Place)
+    street = (row.get('address') or '').strip()
+    city = (row.get('city') or '').strip()
+    state = (row.get('state') or '').strip()
+    zipcode = (row.get('zip') or '').strip()
+
+    if not city or not state:
+        address_lines = [ln.strip() for ln in re.split(r'[\r\n]+', street) if ln.strip()]
+        if address_lines:
+            street = address_lines[0]
+        if len(address_lines) >= 2 and not city:
+            city = address_lines[1]
+        if len(address_lines) >= 3 and not state:
+            state_line = address_lines[2].replace('Directions', '').strip()
+            m = re.match(r'([A-Z]{2})\s*(\d{5})?', state_line)
+            if m:
+                state = m.group(1)
+                if not zipcode and m.group(2):
+                    zipcode = m.group(2)
+
+    # Rebuild address into a single line "street, City, ST ZIP"
+    state_zip = ' '.join([part for part in [state, zipcode] if part]).strip()
+    rebuilt_address_parts = [street]
+    if city:
+        rebuilt_address_parts.append(city)
+    if state_zip:
+        rebuilt_address_parts.append(state_zip)
+    listing['address'] = ', '.join([p for p in rebuilt_address_parts if p])
+    listing['city'] = city
+    listing['state'] = state[:2].upper() if state else ''
+    listing['zip'] = zipcode
+
+    return listing
+
+
 def get_or_create_location_term(city_name: str):
     """Get or create the 'location' (city) taxonomy term ID"""
     if not city_name:
@@ -300,6 +356,21 @@ def normalize_address(address):
 
 def get_existing_urls(limit_pages=None):
     """Fetch existing Senior Place URLs, Seniorly URLs, AND addresses from WordPress (published + drafts)"""
+    if not WP_CACHE_DISABLE and WP_CACHE_FILE.exists():
+        try:
+            with open(WP_CACHE_FILE, "r", encoding="utf-8") as f:
+                cached = json.load(f)
+            ts = cached.get("timestamp", 0)
+            age = time.time() - ts
+            if age <= WP_CACHE_TTL and cached.get("wp_url") == WP_URL:
+                data = cached.get("data", {})
+                print(f"✅ Using cached WP duplicates (age {int(age)}s): {len(data.get('sp_urls', []))} SP URLs, {len(data.get('seniorly_urls', []))} Seniorly URLs, {len(data.get('addresses', []))} addresses\n")
+                return set(data.get("sp_urls", [])), set(data.get("seniorly_urls", [])), set(data.get("addresses", []))
+            else:
+                print("ℹ️ Cache expired or WP URL changed; fetching fresh...")
+        except Exception as e:
+            print(f"⚠️ Cache read failed, fetching fresh: {e}")
+
     print("📥 Fetching existing listings from WordPress...")
     wp_sp_urls = set()  # Senior Place URLs
     wp_seniorly_urls = set()  # Seniorly URLs (from website field)
@@ -359,6 +430,22 @@ def get_existing_urls(limit_pages=None):
                 break
     
     print(f"✅ Found {len(wp_sp_urls)} SP URLs, {len(wp_seniorly_urls)} Seniorly URLs, {len(wp_addresses)} addresses (published + drafts)\n")
+
+    # Write cache
+    try:
+        with open(WP_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump({
+                "timestamp": time.time(),
+                "wp_url": WP_URL,
+                "data": {
+                    "sp_urls": list(wp_sp_urls),
+                    "seniorly_urls": list(wp_seniorly_urls),
+                    "addresses": list(wp_addresses),
+                }
+            }, f)
+    except Exception as e:
+        print(f"⚠️ Failed to write cache: {e}")
+
     return wp_sp_urls, wp_seniorly_urls, wp_addresses
 
 
@@ -463,6 +550,9 @@ def create_listing_safe(listing, wp_sp_urls, wp_seniorly_urls, wp_addresses, ret
             'address': listing['address'],
         }
     }
+    # Main description goes into post content
+    if listing.get('description'):
+        post_data['content'] = listing['description']
     
     # Add optional ACF fields
     # Note: WordPress doesn't have separate 'city' or 'zip' ACF fields
@@ -621,7 +711,7 @@ def import_csv_safe(csv_file, batch_size=DEFAULT_BATCH_SIZE, limit=None, resume=
     # Read CSV
     with open(csv_file, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
-        all_listings = list(reader)
+        all_listings = [normalize_listing_row(row) for row in reader]
     
     # Apply limit
     if limit:

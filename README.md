@@ -91,26 +91,55 @@ SP_PASSWORD="password"
 NOTIFICATION_EMAIL=you@example.com
 ```
 
-## 🗓️ Monthly Workflow
+## 🗓️ Operational Runbook
 
-1. **Start dashboard** → `start_dashboard.bat`
-2. **Run scraper** → Select states, click "Search for Communities"
-3. **Wait ~10 min** → Watch live logs
-4. **Check results** → View new/updated counts
-5. **Import to WP** → Go to "Add Communities" tab
-6. **Review drafts** → Publish in WordPress admin
+### Normal run (dashboard)
+1. Start dashboard → `start_dashboard.bat` (Win) or `./start_dashboard.sh` (Mac/Linux).
+2. Open `http://localhost:5000`, pick states, click **Search for Communities**.
+3. Keep the tab open; live logs stream from `web_interface/logs/…`.
+4. When finished, download `new_listings_*.csv` and `updated_listings_*.csv` from `monthly_updates/<timestamp>/`.
+5. Import via dashboard **Add Communities** tab (uploads CSV and runs safe importer).
+6. Review drafts in WordPress and publish as needed.
+
+### Resume a stopped run
+1. Find latest `monthly_updates/<timestamp>/resume_checkpoint.json`.
+2. Re-run the orchestrator with `--full-update --resume --checkpoint <path>` (or from dashboard if supported).
+3. It reloads cached raw state data and continues remaining states; enrichment re-runs as needed.
+
+### Inspect logs / status
+- Dashboard status/API: `http://localhost:5000/api/status`.
+- Process tracking is persisted in `web_interface/logs/process_state.json` (PID, log path, start time).
+- Live logs: `web_interface/logs/scraper_*.log` and importer logs `web_interface/logs/import_*.log`.
+
+### Single listing spot-check
+- Dashboard **Single Listing** tab → paste Senior Place URL (`/show/<id>`).
+- Returns: title, address, city/state/zip, care types, pricing (base/high/second person), description, featured image URL.
+
+### CLI run (headless)
+```bash
+python monthly_scrapers/monthly_update_orchestrator.py \
+  --full-update \
+  --states AZ CA CO ID NM UT \
+  --wp-password "$WP_PASSWORD" \
+  --sp-password "$SP_PASSWORD"
+```
+
+Outputs land in `monthly_updates/<timestamp>/` with `raw/*.json`, `new_listings_*.csv`, `updated_listings_*.csv`, and `update_summary_*.json`.
 
 ## 🧪 Testing
 
 ```bash
-# Run system tests
+# Full suite (unit + integration)
+python -m pytest tests -v
+
+# System smoke
 python monthly_scrapers/test_monthly_update.py
 
-# Test WordPress connection
+# WordPress connection
 curl -u "user:pass" "https://your-site/wp-json/wp/v2/listing?per_page=1"
 ```
 
-## 📊 Coverage
+## 📊 Coverage (expected)
 
 | State | Listings | Status |
 |-------|----------|--------|
@@ -121,7 +150,7 @@ curl -u "user:pass" "https://your-site/wp-json/wp/v2/listing?per_page=1"
 | New Mexico | ~600 | ✅ Active |
 | Utah | ~1,500 | ✅ Active |
 
-**Total**: ~26,000+ listings across 6 states
+**Total target**: ~26,000+ listings across 6 states (verify after each run)
 
 ## 📖 Documentation
 
@@ -147,4 +176,4 @@ curl -u "user:pass" "https://your-site/wp-json/wp/v2/listing?per_page=1"
 ---
 
 **Maintained by**: A Place for Seniors  
-**Last Updated**: December 2024
+**Last Updated**: December 2025
