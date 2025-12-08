@@ -39,6 +39,11 @@ class MonthlyUpdateOrchestrator:
         self.wp_password = wp_password
         self.sp_username = sp_username
         self.sp_password = sp_password
+        # Optional per-state pagination cap for quick tests (0 = no cap)
+        try:
+            self.max_pages_per_state = int(os.getenv("MAX_PAGES_PER_STATE", "0"))
+        except Exception:
+            self.max_pages_per_state = 0
         
         # Stats tracking
         self.stats = {
@@ -308,6 +313,11 @@ class MonthlyUpdateOrchestrator:
                     await next_button.click()
                     await page.wait_for_timeout(2000)
                     page_num += 1
+                    
+                    # Per-state cap for quick tests
+                    if self.max_pages_per_state and page_num > self.max_pages_per_state:
+                        self.log(f"Reached per-state page cap ({self.max_pages_per_state}) for {state_code}", "WARNING")
+                        break
                     
                     # Safety limit
                     if page_num > 500:
