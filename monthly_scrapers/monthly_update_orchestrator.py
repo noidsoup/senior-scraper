@@ -348,8 +348,125 @@ class MonthlyUpdateOrchestrator:
                 try:
                     page = await context.new_page()
                     
-                    # Get attributes page
-                    attrs_url = f"{listing['url'].rstrip('/')}/attributes"
+                    # Normalize base URL (strip /details or /attributes)
+                    base_url = listing['url'].split('?')[0]
+                    for suffix in ['/details', '/attributes']:
+                        if base_url.endswith(suffix):
+                            base_url = base_url[:-len(suffix)]
+
+                    # --- Address from Details tab (form fields) ---
+                    detail_data = {}
+                    try:
+                        details_url = f"{base_url.rstrip('/')}/details"
+                        await page.goto(details_url, wait_until="networkidle", timeout=20000)
+                        await page.wait_for_timeout(1200)
+                        detail_data = await page.evaluate("""
+                            () => {
+                                const getField = (needle) => {
+                                    const labels = Array.from(document.querySelectorAll('label'));
+                                    for (const label of labels) {
+                                        const text = (label.textContent || '').toLowerCase();
+                                        if (text.includes(needle)) {
+                                            const input = label.querySelector('input');
+                                            const textarea = label.querySelector('textarea');
+                                            const select = label.querySelector('select');
+                                            if (input && input.value) return input.value.trim();
+                                            if (textarea && textarea.value) return textarea.value.trim();
+                                            if (select) {
+                                                const opt = select.options[select.selectedIndex];
+                                                if (opt && opt.value) return opt.value.trim();
+                                                if (opt && opt.textContent) return opt.textContent.trim();
+                                            }
+                                        }
+                                    }
+                                    return '';
+                                };
+                                return {
+                                    address: getField('address'),
+                                    city: getField('city'),
+                                    state: getField('state'),
+                                    zip: getField('zip')
+                                };
+                            }
+                        """)
+                    except Exception:
+                        detail_data = {}
+
+                    # Fallback visible address (cards/blocks)
+                    address = detail_data.get('address', '').strip()
+                    city = detail_data.get('city', '').strip()
+                    state = detail_data.get('state', '').strip()
+                    zip_code = detail_data.get('zip', '').strip()
+
+                    if not address:
+                        try:
+                            addr_data = await page.evaluate("""
+                                () => {
+                                    const addressEl = document.querySelector('address');
+                                    if (addressEl) {
+                                        const ps = Array.from(addressEl.querySelectorAll('p'));
+                                        if (ps.length >= 2) {
+                                            return { address: ps[0].textContent.trim(), location: ps[1].textContent.trim() };
+                                        }
+                                        if (ps.length === 1) {
+                                            const text = ps[0].textContent.trim();
+                                            const lines = text.split('\\n').filter(l => l.trim() && !l.includes('Directions'));
+                                            if (lines.length >= 2) {
+                                                return { address: lines[0].trim(), location: lines[1].trim() };
+                                            }
+                                        }
+                                    }
+                                    const addrDiv = document.querySelector('div.text-sm.text-gray-500');
+                                    if (addrDiv) {
+                                        const text = addrDiv.textContent.trim();
+                                        const lines = text.split('\\n').filter(l => {
+                                            const trimmed = l.trim();
+                                            return trimmed &&
+                                                   !trimmed.includes('Directions') &&
+                                                   !trimmed.includes('Last updated') &&
+                                                   !trimmed.includes('updated on') &&
+                                                   !trimmed.match(/^\\(\\d{3}\\)/) &&
+                                                   trimmed.length > 5;
+                                        });
+                                        if (lines.length >= 2 && /\\d+/.test(lines[0])) {
+                                            return { address: lines[0].trim(), location: lines[1].trim() };
+                                        }
+                                        if (lines.length === 1 && text.includes(',')) {
+                                            const parts = text.split(',').map(p => p.trim());
+                                            if (parts.length >= 2 && /\\d+/.test(parts[0])) {
+                                                return { address: parts[0], location: parts.slice(1).join(', ') };
+                                            }
+                                        }
+                                    }
+                                    const candidates = document.querySelectorAll('[class*="address"], [class*="location"], .address, .location');
+                                    for (const el of candidates) {
+                                        const text = el.textContent.trim();
+                                        if (text && (/\\d+/.test(text) || text.includes(','))) {
+                                            const lines = text.split('\\n').filter(l => l.trim());
+                                            if (lines.length >= 2) {
+                                                return { address: lines[0].trim(), location: lines[1].trim() };
+                                            }
+                                        }
+                                    }
+                                    return { address: '', location: '' };
+                                }
+                            """)
+                            address = addr_data.get('address', '').strip() if addr_data else ''
+                            location = addr_data.get('location', '').strip() if addr_data else ''
+                            if location and (not city or not state):
+                                parts = location.split(',')
+                                if len(parts) >= 2:
+                                    city = city or parts[0].strip()
+                                    state_zip = parts[1].strip().split()
+                                    if len(state_zip) > 0 and not state:
+                                        state = state_zip[0]
+                                    if len(state_zip) > 1 and not zip_code:
+                                        zip_code = state_zip[1]
+                        except Exception:
+                            pass
+
+                    # --- Attributes page for care types / pricing / description ---
+                    attrs_url = f"{base_url.rstrip('/')}/attributes"
                     await page.goto(attrs_url, wait_until="networkidle", timeout=20000)
                     await page.wait_for_timeout(1000)
                     
