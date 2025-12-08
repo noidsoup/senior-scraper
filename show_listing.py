@@ -6,12 +6,19 @@ import os
 import json
 from playwright.async_api import async_playwright
 
-# Get a sample URL from the CSV
+# Get a sample URL from the CSV - pick one with care types
 import csv
+sample_row = None
 with open('monthly_updates/20251205_115842/new_listings_20251205_115842.csv', 'r', encoding='utf-8') as f:
     reader = csv.DictReader(f)
-    sample_row = next(reader)
-    sample_url = sample_row.get('senior_place_url', '')
+    rows = list(reader)
+    for row in rows:
+        if row.get('normalized_types') and row['normalized_types'].strip():
+            sample_row = row
+            break
+    if not sample_row and rows:
+        sample_row = rows[0]
+sample_url = sample_row.get('senior_place_url', '') if sample_row else ''
 
 if not sample_url:
     print("No URL found in CSV")

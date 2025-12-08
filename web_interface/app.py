@@ -235,62 +235,265 @@ def api_fetch_single_listing():
                 try:
                     # Login to Senior Place to access attributes
                     await page.goto("https://app.seniorplace.com/login", timeout=30000)
+                    await page.wait_for_timeout(500)  # Wait for page to load
                     await page.fill('input[name="email"]', sp_user)
                     await page.fill('input[name="password"]', sp_pass)
                     await page.click('button[type="submit"]')
+                    # Wait for login to complete and verify we're logged in
                     await page.wait_for_selector('text=Communities', timeout=15000)
+                    await page.wait_for_timeout(1000)  # Ensure session is established
                     
-                    await page.goto(url, timeout=30000, wait_until="networkidle")
-                    await page.wait_for_timeout(1500)
+                    # Normalize to base URL (strip /details or /attributes suffixes)
+                    base_url = url.split('?')[0]
+                    for suffix in ['/details', '/attributes']:
+                        if base_url.endswith(suffix):
+                            base_url = base_url[:-len(suffix)]
+                    # Navigate to listing page (session/cookies will be maintained)
+                    await page.goto(base_url, timeout=30000, wait_until="networkidle")
+                    await page.wait_for_timeout(2000)  # Give page more time to render
                     
-                    # Extract title
-                    title_el = await page.query_selector('h1')
-                    title = await title_el.inner_text() if title_el else 'Unknown'
+                    # Extract title - match actual Senior Place detail page structure
+                    # Title is in h2 with classes like "text-base md:text-xl lg:text-2xl"
+                    # OR in the Name input field
+                    title_data = await page.evaluate("""
+                        () => {
+                            // Try h2 with text-xl or text-2xl classes (actual detail page structure)
+                            const h2 = document.querySelector('h2.text-base, h2.text-xl, h2.text-2xl');
+                            if (h2 && h2.textContent.trim()) {
+                                return h2.textContent.trim();
+                            }
+                            
+                            // Try Name input field (form field)
+                            const nameInput = Array.from(document.querySelectorAll('input')).find(input => {
+                                const label = input.closest('label');
+                                if (label) {
+                                    const labelText = label.textContent || '';
+                                    return labelText.includes('Name') && input.value;
+                                }
+                                return false;
+                            });
+                            if (nameInput && nameInput.value.trim()) {
+                                return nameInput.value.trim();
+                            }
+                            
+                            // Fallback to any h2
+                            const anyH2 = document.querySelector('h2');
+                            if (anyH2 && anyH2.textContent.trim()) {
+                                return anyH2.textContent.trim();
+                            }
+                            
+                            return '';
+                        }
+                    """)
+                    title = title_data.strip() if title_data else 'Unknown'
                     
-                    # Extract address info
-                    address = ''
-                    city = ''
-                    state = ''
-                    zip_code = ''
+                    # Extract address using Details tab form fields first, then fallbacks
+                    detail_data = {}
+                    def extract_details_js():
+                        return """
+                            () => {
+                                const getField = (needle) => {
+                                    const labels = Array.from(document.querySelectorAll('label'));
+                                    for (const label of labels) {
+                                        const text = (label.textContent || '').toLowerCase();
+                                        if (text.includes(needle)) {
+                                            const input = label.querySelector('input');
+                                            const textarea = label.querySelector('textarea');
+                                            const select = label.querySelector('select');
+                                            if (input && input.value) return input.value.trim();
+                                            if (textarea && textarea.value) return textarea.value.trim();
+                                            if (select) {
+                                                const opt = select.options[select.selectedIndex];
+                                                if (opt && opt.value) return opt.value.trim();
+                                                if (opt && opt.textContent) return opt.textContent.trim();
+                                            }
+                                        }
+                                    }
+                                    return '';
+                                };
+                                return {
+                                    address: getField('address'),
+                                    city: getField('city'),
+                                    state: getField('state'),
+                                    zip: getField('zip')
+                                };
+                            }
+                        """
+
+                    detail_data = {}
+                    try:
+                        await page.wait_for_selector('a[data-subpage="details"]', timeout=5000)
+                        await page.click('a[data-subpage="details"]')
+                        await page.wait_for_timeout(1200)
+                        detail_data = await page.evaluate(extract_details_js())
+                    except Exception:
+                        detail_data = {}
+
+                    # If still empty, try navigating directly to /details and retry
+                    if not any(detail_data.values()):
+                        try:
+                            details_url = base_url.rstrip('/') + '/details'
+                            await page.goto(details_url, wait_until="networkidle", timeout=20000)
+                            await page.wait_for_timeout(1200)
+                            detail_data = await page.evaluate(extract_details_js())
+                        except Exception:
+                            pass
                     
-                    address_els = await page.query_selector_all('address p')
-                    if len(address_els) >= 1:
-                        address = (await address_els[0].inner_text()) or ''
-                    if len(address_els) >= 2:
-                        location = (await address_els[1].inner_text()) or ''
+                    # Fallback extraction from visible address blocks
+                    addr_data = await page.evaluate("""
+                        () => {
+                            // Try address tag first (standard HTML5)
+                            const addressEl = document.querySelector('address');
+                            if (addressEl) {
+                                const ps = addressEl.querySelectorAll('p');
+                                if (ps.length >= 2) {
+                                    return {
+                                        address: ps[0].textContent.trim(),
+                                        location: ps[1].textContent.trim()
+                                    };
+                                }
+                                // Single p in address
+                                if (ps.length === 1) {
+                                    const text = ps[0].textContent.trim();
+                                    const lines = text.split('\\n').filter(l => l.trim() && !l.includes('Directions'));
+                                    if (lines.length >= 2) {
+                                        return { address: lines[0].trim(), location: lines[1].trim() };
+                                    }
+                                }
+                            }
+                            
+                            // Try div.text-sm.text-gray-500 (like card view uses)
+                            const addrDiv = document.querySelector('div.text-sm.text-gray-500');
+                            if (addrDiv) {
+                                const text = addrDiv.textContent.trim();
+                                // Filter out metadata like "Last updated", "Directions", phone numbers
+                                const lines = text.split('\\n').filter(l => {
+                                    const trimmed = l.trim();
+                                    return trimmed && 
+                                           !trimmed.includes('Directions') && 
+                                           !trimmed.includes('Last updated') &&
+                                           !trimmed.includes('updated on') &&
+                                           !trimmed.match(/^\\(\\d{3}\\)/) && // Phone numbers
+                                           trimmed.length > 5; // Must be substantial text
+                                });
+                                if (lines.length >= 2) {
+                                    // First line should look like an address (has numbers)
+                                    if (/\\d+/.test(lines[0])) {
+                                        return { address: lines[0].trim(), location: lines[1].trim() };
+                                    }
+                                }
+                                if (lines.length === 1 && text.includes(',')) {
+                                    // Single line with comma
+                                    const parts = text.split(',').map(p => p.trim());
+                                    if (parts.length >= 2 && /\\d+/.test(parts[0])) {
+                                        return { address: parts[0], location: parts.slice(1).join(', ') };
+                                    }
+                                }
+                            }
+                            
+                            // Try any element with address-like classes or content
+                            const candidates = document.querySelectorAll('[class*="address"], [class*="location"], .address, .location');
+                            for (const el of candidates) {
+                                const text = el.textContent.trim();
+                                if (text && (/\d+/.test(text) || text.includes(','))) {
+                                    const lines = text.split('\\n').filter(l => l.trim());
+                                    if (lines.length >= 2) {
+                                        return { address: lines[0].trim(), location: lines[1].trim() };
+                                    }
+                                }
+                            }
+                            
+                            return { address: '', location: '' };
+                        }
+                    """)
+                    
+                    address = (detail_data.get('address') or addr_data.get('address') or '').strip()
+                    location = addr_data.get('location', '').strip() if addr_data else ''
+                    city = (detail_data.get('city') or '').strip()
+                    state = (detail_data.get('state') or '').strip()
+                    zip_code = (detail_data.get('zip') or '').strip()
+                    
+                    # Parse location into city, state, zip if not already populated
+                    if location and (not city or not state):
                         parts = location.split(',')
                         if len(parts) >= 2:
-                            city = parts[0].strip()
+                            city = city or parts[0].strip()
                             state_zip = parts[1].strip().split()
-                            if len(state_zip) > 0:
+                            if len(state_zip) > 0 and not state:
                                 state = state_zip[0]
-                            if len(state_zip) > 1:
+                            if len(state_zip) > 1 and not zip_code:
                                 zip_code = state_zip[1]
                     
-                    # Extract care types
-                    # Switch to attributes page for full detail
-                    attrs_url = url.rstrip('/') + '/attributes'
-                    await page.goto(attrs_url, wait_until="networkidle", timeout=20000)
-                    await page.wait_for_timeout(1000)
+                    # Extract care types and pricing from attributes tab
+                    # Click on the Attributes tab to access full data
+                    try:
+                        # Wait for the tab navigation to be available
+                        await page.wait_for_selector('a[data-subpage="attributes"]', timeout=5000)
+                        await page.click('a[data-subpage="attributes"]')
+                        await page.wait_for_timeout(2000)  # Wait for attributes tab to load
+                    except Exception as e:
+                        # If clicking doesn't work, try navigating directly
+                        try:
+                            attrs_url = url.rstrip('/') + '/attributes'
+                            await page.goto(attrs_url, wait_until="networkidle", timeout=20000)
+                            await page.wait_for_timeout(1000)
+                        except:
+                            pass
                     
                     care_types = []
                     pricing_and_desc = {}
                     
                     try:
+                        # Extract care types from "Community Type(s)" section
+                        # Based on the HTML structure provided
                         care_types = await page.evaluate("""
                             () => {
                                 const types = [];
-                                const labels = Array.from(document.querySelectorAll("label.inline-flex"));
+                                // Find the "Community Type(s)" section
+                                const sections = Array.from(document.querySelectorAll('div'));
+                                let communityTypesSection = null;
                                 
-                                for (const label of labels) {
-                                    const textEl = label.querySelector("div.ml-2");
-                                    const input = label.querySelector('input[type="checkbox"]');
-                                    
-                                    if (!textEl || !input) continue;
-                                    if (!input.checked) continue;
-                                    
-                                    const name = (textEl.textContent || "").trim();
-                                    if (name) types.push(name);
+                                for (const section of sections) {
+                                    const text = section.textContent || '';
+                                    if (text.includes('Community Type(s)')) {
+                                        communityTypesSection = section;
+                                        break;
+                                    }
+                                }
+                                
+                                if (communityTypesSection) {
+                                    // Find all checked checkboxes in this section
+                                    const checkboxes = communityTypesSection.querySelectorAll('input[type="checkbox"]:checked');
+                                    for (const checkbox of checkboxes) {
+                                        const label = checkbox.closest('label');
+                                        if (label) {
+                                            const textEl = label.querySelector('div.ml-2');
+                                            if (textEl) {
+                                                const name = (textEl.textContent || "").trim();
+                                                if (name && !name.includes('Room') && !name.includes('Bedroom') && !name.includes('Studio')) {
+                                                    types.push(name);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // Fallback: get all checked checkboxes with care type labels
+                                if (types.length === 0) {
+                                    const labels = Array.from(document.querySelectorAll("label.inline-flex"));
+                                    for (const label of labels) {
+                                        const textEl = label.querySelector("div.ml-2");
+                                        const input = label.querySelector('input[type="checkbox"]');
+                                        
+                                        if (!textEl || !input) continue;
+                                        if (!input.checked) continue;
+                                        
+                                        const name = (textEl.textContent || "").trim();
+                                        // Filter out room types
+                                        if (name && !name.includes('Room') && !name.includes('Bedroom') && !name.includes('Studio') && !name.includes('Private') && !name.includes('Shared')) {
+                                            types.push(name);
+                                        }
+                                    }
                                 }
                                 
                                 return types;
@@ -300,47 +503,113 @@ def api_fetch_single_listing():
                         care_types = []
                     
                     try:
+                        # Extract pricing from Finances section
                         pricing_and_desc = await page.evaluate("""
                             () => {
                                 const result = {};
-                                const groups = document.querySelectorAll('.form-group');
-                                for (const group of groups) {
-                                    const labelText = group.textContent || '';
-                                    const input = group.querySelector('input');
-                                    const textarea = group.querySelector('textarea');
+                                
+                                // Find all input fields and match by label text
+                                const inputs = Array.from(document.querySelectorAll('input[type="text"], input[type="number"], input[inputmode="decimal"]'));
+                                
+                                for (const input of inputs) {
+                                    // Look for label associated with this input
+                                    const label = input.closest('label') || input.closest('.form-group')?.querySelector('label');
+                                    const labelText = label ? (label.textContent || '').toLowerCase() : '';
                                     
-                                    if (labelText.includes('Monthly Base Price') && input) {
-                                        result.monthly_base_price = input.value;
-                                    }
-                                    if (labelText.includes('High End') && input) {
-                                        result.price_high_end = input.value;
-                                    }
-                                    if (labelText.includes('Second Person Fee') && input) {
-                                        result.second_person_fee = input.value;
-                                    }
-                                    if (labelText.includes('Description') && (textarea || input)) {
-                                        const source = textarea || input;
-                                        result.description = (source.value || source.textContent || '').trim();
+                                    // Check parent containers for label text
+                                    let parent = input.parentElement;
+                                    for (let i = 0; i < 5 && parent; i++) {
+                                        const parentText = (parent.textContent || '').toLowerCase();
+                                        if (parentText.includes('monthly base price')) {
+                                            result.monthly_base_price = input.value || '';
+                                            break;
+                                        }
+                                        if (parentText.includes('price (high end)') || parentText.includes('high end')) {
+                                            result.price_high_end = input.value || '';
+                                            break;
+                                        }
+                                        if (parentText.includes('second person fee')) {
+                                            result.second_person_fee = input.value || '';
+                                            break;
+                                        }
+                                        parent = parent.parentElement;
                                     }
                                 }
+                                
+                                // Try to find description - might be in Details tab or a textarea
+                                const textareas = Array.from(document.querySelectorAll('textarea'));
+                                for (const textarea of textareas) {
+                                    const label = textarea.closest('label');
+                                    const labelText = label ? (label.textContent || '').toLowerCase() : '';
+                                    if (labelText.includes('description') || labelText.includes('notes')) {
+                                        const desc = (textarea.value || textarea.textContent || '').trim();
+                                        if (desc && desc.length > 20) {
+                                            result.description = desc;
+                                            break;
+                                        }
+                                    }
+                                }
+                                
                                 return result;
                             }
                         """)
                     except Exception:
                         pricing_and_desc = {}
                     
-                    # Extract featured image (best-effort from main page)
+                    # Extract featured image from main listing page - exclude logo, get community image
                     await page.goto(url, wait_until="networkidle", timeout=20000)
-                    await page.wait_for_timeout(500)
-                    featured_image = ''
-                    img_el = await page.query_selector("img")
-                    if img_el:
-                        src = await img_el.get_attribute('src')
-                        if src:
-                            if src.startswith('/api/files/'):
-                                featured_image = f"https://placement-crm-cdn.s3.us-west-2.amazonaws.com{src}"
+                    await page.wait_for_timeout(1000)
+                    
+                    featured_image = ""
+                    # Get all images and find the community image (not the logo)
+                    img_data = await page.evaluate("""
+                        () => {
+                            const images = Array.from(document.querySelectorAll('img'));
+                            // Look for community image - exclude logos
+                            for (const img of images) {
+                                const src = img.src || img.getAttribute('src') || '';
+                                // Skip logo images
+                                if (src.includes('/logo') || src.includes('/api/tenants/')) {
+                                    continue;
+                                }
+                                // Look for community images
+                                if (src.includes('/api/files/') || src.includes('/_entities/communities/')) {
+                                    return src;
+                                }
+                                // If it's a relative path that looks like a file
+                                if (src.startsWith('/api/') || src.startsWith('/_entities/')) {
+                                    return src;
+                                }
+                            }
+                            // If no community image found, get first non-logo image
+                            for (const img of images) {
+                                const src = img.src || img.getAttribute('src') || '';
+                                if (!src.includes('/logo') && !src.includes('/api/tenants/')) {
+                                    return src;
+                                }
+                            }
+                            return '';
+                        }
+                    """)
+                    
+                    if img_data:
+                        img_src = img_data
+                        # Match orchestrator's logic exactly
+                        if img_src.startswith("/api/files/"):
+                            featured_image = f"https://placement-crm-cdn.s3.us-west-2.amazonaws.com{img_src}"
+                        elif img_src.startswith("/_entities/communities/"):
+                            # Direct community image path
+                            featured_image = f"https://placement-crm-cdn.s3.us-west-2.amazonaws.com{img_src}"
+                        elif img_src.startswith("http"):
+                            featured_image = img_src
+                        elif img_src.startswith("/"):
+                            # Relative path - try CDN conversion
+                            if "/api/" in img_src or "/_entities/" in img_src:
+                                featured_image = f"https://placement-crm-cdn.s3.us-west-2.amazonaws.com{img_src}"
                             else:
-                                featured_image = src if src.startswith('http') else f"https://app.seniorplace.com{src}"
+                                featured_image = f"https://app.seniorplace.com{img_src}"
+                        else:
+                            featured_image = img_src
                     
                     await browser.close()
                     
@@ -370,6 +639,366 @@ def api_fetch_single_listing():
         
     except Exception as e:
         return jsonify({'error': f'Failed to fetch listing: {str(e)}'}), 500
+
+@app.route('/api/compare-single-listing', methods=['POST'])
+def api_compare_single_listing():
+    """Compare a single Senior Place listing with WordPress listings"""
+    data = request.json
+    url = data.get('url', '').strip()
+    
+    if not url:
+        return jsonify({'error': 'URL is required'}), 400
+    
+    try:
+        # First, fetch the listing from Senior Place
+        from playwright.async_api import async_playwright
+        import asyncio
+        import requests
+        from pathlib import Path
+        
+        sp_user = os.getenv('SP_USERNAME')
+        sp_pass = os.getenv('SP_PASSWORD')
+        wp_user = os.getenv('WP_USERNAME')
+        wp_pass = os.getenv('WP_PASSWORD')
+        wp_url = os.getenv('WP_URL', 'https://aplaceforseniorscms.kinsta.cloud')
+        
+        if not sp_user or not sp_pass:
+            return jsonify({'error': 'Senior Place credentials not set on server'}), 400
+        
+        # Reuse the fetch function
+        async def get_listing():
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(headless=True)
+                context = await browser.new_context()
+                page = await context.new_page()
+                
+                try:
+                    await page.goto("https://app.seniorplace.com/login", timeout=30000)
+                    await page.wait_for_timeout(500)
+                    await page.fill('input[name="email"]', sp_user)
+                    await page.fill('input[name="password"]', sp_pass)
+                    await page.click('button[type="submit"]')
+                    await page.wait_for_selector('text=Communities', timeout=15000)
+                    await page.wait_for_timeout(1000)
+                    
+                    # Normalize to base URL (strip /details or /attributes suffixes)
+                    base_url = url.split('?')[0]
+                    for suffix in ['/details', '/attributes']:
+                        if base_url.endswith(suffix):
+                            base_url = base_url[:-len(suffix)]
+
+                    await page.goto(base_url, timeout=30000, wait_until="networkidle")
+                    await page.wait_for_timeout(2000)
+                    
+                    # Extract title
+                    title_data = await page.evaluate("""
+                        () => {
+                            const h2 = document.querySelector('h2.text-base, h2.text-xl, h2.text-2xl');
+                            if (h2 && h2.textContent.trim()) return h2.textContent.trim();
+                            const nameInput = Array.from(document.querySelectorAll('input')).find(input => {
+                                const label = input.closest('label');
+                                return label && label.textContent.includes('Name') && input.value;
+                            });
+                            if (nameInput && nameInput.value.trim()) return nameInput.value.trim();
+                            const anyH2 = document.querySelector('h2');
+                            return anyH2 ? anyH2.textContent.trim() : '';
+                        }
+                    """)
+                    title = title_data.strip() if title_data else 'Unknown'
+                    
+                    # Details extractor JS
+                    def extract_details_js():
+                        return """
+                            () => {
+                                const getField = (needle) => {
+                                    const labels = Array.from(document.querySelectorAll('label'));
+                                    for (const label of labels) {
+                                        const text = (label.textContent || '').toLowerCase();
+                                        if (text.includes(needle)) {
+                                            const input = label.querySelector('input');
+                                            const textarea = label.querySelector('textarea');
+                                            const select = label.querySelector('select');
+                                            if (input && input.value) return input.value.trim();
+                                            if (textarea && textarea.value) return textarea.value.trim();
+                                            if (select) {
+                                                const opt = select.options[select.selectedIndex];
+                                                if (opt && opt.value) return opt.value.trim();
+                                                if (opt && opt.textContent) return opt.textContent.trim();
+                                            }
+                                        }
+                                    }
+                                    return '';
+                                };
+                                return {
+                                    address: getField('address'),
+                                    city: getField('city'),
+                                    state: getField('state'),
+                                    zip: getField('zip')
+                                };
+                            }
+                        """
+
+                    detail_data = {}
+                    try:
+                        await page.wait_for_selector('a[data-subpage="details"]', timeout=5000)
+                        await page.click('a[data-subpage="details"]')
+                        await page.wait_for_timeout(1200)
+                        detail_data = await page.evaluate(extract_details_js())
+                    except Exception:
+                        detail_data = {}
+
+                    if not any(detail_data.values()):
+                        try:
+                            details_url = base_url.rstrip('/') + '/details'
+                            await page.goto(details_url, wait_until="networkidle", timeout=20000)
+                            await page.wait_for_timeout(1200)
+                            detail_data = await page.evaluate(extract_details_js())
+                        except Exception:
+                            pass
+
+                    # Fallback address extraction from visible blocks
+                    addr_data = await page.evaluate("""
+                        () => {
+                            const addressEl = document.querySelector('address');
+                            if (addressEl) {
+                                const ps = Array.from(addressEl.querySelectorAll('p'));
+                                if (ps.length >= 2) {
+                                    return { address: ps[0].textContent.trim(), location: ps[1].textContent.trim() };
+                                }
+                                if (ps.length === 1) {
+                                    const text = ps[0].textContent.trim();
+                                    const lines = text.split('\\n').filter(l => l.trim() && !l.includes('Directions'));
+                                    if (lines.length >= 2) {
+                                        return { address: lines[0].trim(), location: lines[1].trim() };
+                                    }
+                                }
+                            }
+                            const addrDiv = document.querySelector('div.text-sm.text-gray-500');
+                            if (addrDiv) {
+                                const text = addrDiv.textContent.trim();
+                                const lines = text.split('\\n').filter(l => {
+                                    const trimmed = l.trim();
+                                    return trimmed &&
+                                           !trimmed.includes('Directions') &&
+                                           !trimmed.includes('Last updated') &&
+                                           !trimmed.includes('updated on') &&
+                                           !trimmed.match(/^\\(\\d{3}\\)/) &&
+                                           trimmed.length > 5;
+                                });
+                                if (lines.length >= 2 && /\\d+/.test(lines[0])) {
+                                    return { address: lines[0].trim(), location: lines[1].trim() };
+                                }
+                                if (lines.length === 1 && text.includes(',')) {
+                                    const parts = text.split(',').map(p => p.trim());
+                                    if (parts.length >= 2 && /\\d+/.test(parts[0])) {
+                                        return { address: parts[0], location: parts.slice(1).join(', ') };
+                                    }
+                                }
+                            }
+                            const candidates = document.querySelectorAll('[class*="address"], [class*="location"], .address, .location');
+                            for (const el of candidates) {
+                                const text = el.textContent.trim();
+                                if (text && (/\\d+/.test(text) || text.includes(','))) {
+                                    const lines = text.split('\\n').filter(l => l.trim());
+                                    if (lines.length >= 2) {
+                                        return { address: lines[0].trim(), location: lines[1].trim() };
+                                    }
+                                }
+                            }
+                            return { address: '', location: '' };
+                        }
+                    """)
+
+                    address = (detail_data.get('address') or addr_data.get('address') or '').strip()
+                    location = addr_data.get('location', '').strip() if addr_data else ''
+                    city = (detail_data.get('city') or '').strip()
+                    state = (detail_data.get('state') or '').strip()
+                    zip_code = (detail_data.get('zip') or '').strip()
+
+                    if location and (not city or not state):
+                        parts = location.split(',')
+                        if len(parts) >= 2:
+                            city = city or parts[0].strip()
+                            state_zip = parts[1].strip().split()
+                            if len(state_zip) > 0 and not state:
+                                state = state_zip[0]
+                            if len(state_zip) > 1 and not zip_code:
+                                zip_code = state_zip[1]
+                    
+                    # Click attributes tab
+                    try:
+                        await page.wait_for_selector('a[data-subpage="attributes"]', timeout=5000)
+                        await page.click('a[data-subpage="attributes"]')
+                        await page.wait_for_timeout(2000)
+                    except:
+                        pass
+                    
+                    # Extract care types
+                    care_types = await page.evaluate("""
+                        () => {
+                            const types = [];
+                            const sections = Array.from(document.querySelectorAll('div'));
+                            let communityTypesSection = null;
+                            for (const section of sections) {
+                                if (section.textContent.includes('Community Type(s)')) {
+                                    communityTypesSection = section;
+                                    break;
+                                }
+                            }
+                            if (communityTypesSection) {
+                                const checkboxes = communityTypesSection.querySelectorAll('input[type="checkbox"]:checked');
+                                for (const checkbox of checkboxes) {
+                                    const label = checkbox.closest('label');
+                                    if (label) {
+                                        const textEl = label.querySelector('div.ml-2');
+                                        if (textEl) {
+                                            const name = textEl.textContent.trim();
+                                            if (name && !name.includes('Room') && !name.includes('Bedroom') && !name.includes('Studio')) {
+                                                types.push(name);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            return types;
+                        }
+                    """)
+                    
+                    # Extract pricing
+                    pricing = await page.evaluate("""
+                        () => {
+                            const result = {};
+                            const inputs = Array.from(document.querySelectorAll('input[type="text"], input[type="number"], input[inputmode="decimal"]'));
+                            for (const input of inputs) {
+                                let parent = input.parentElement;
+                                for (let i = 0; i < 5 && parent; i++) {
+                                    const parentText = (parent.textContent || '').toLowerCase();
+                                    if (parentText.includes('monthly base price')) {
+                                        result.monthly_base_price = input.value || '';
+                                        break;
+                                    }
+                                    if (parentText.includes('price (high end)') || parentText.includes('high end')) {
+                                        result.price_high_end = input.value || '';
+                                        break;
+                                    }
+                                    if (parentText.includes('second person fee')) {
+                                        result.second_person_fee = input.value || '';
+                                        break;
+                                    }
+                                    parent = parent.parentElement;
+                                }
+                            }
+                            return result;
+                        }
+                    """)
+                    
+                    await browser.close()
+                    
+                    return {
+                        'title': title.strip(),
+                        'address': address.strip(),
+                        'city': city.strip(),
+                        'state': state.strip(),
+                        'zip': zip_code.strip(),
+                        'care_types': ', '.join(care_types) if care_types else '',
+                        'monthly_base_price': pricing.get('monthly_base_price', ''),
+                        'price_high_end': pricing.get('price_high_end', ''),
+                        'second_person_fee': pricing.get('second_person_fee', ''),
+                        'url': url
+                    }
+                except Exception as e:
+                    await browser.close()
+                    raise e
+        
+        sp_listing = asyncio.run(get_listing())
+        
+        # Load cached WordPress listings or fetch a small subset
+        wp_listings = {}
+        cache_file = Path(".cache/wp_listings_cache.json")
+        
+        if cache_file.exists():
+            try:
+                import json
+                import time
+                with open(cache_file, 'r', encoding='utf-8') as f:
+                    cache_data = json.load(f)
+                    if time.time() - cache_data.get('timestamp', 0) < 3600:  # 1 hour TTL
+                        wp_listings = cache_data.get('data', {})
+            except:
+                pass
+        
+        # If no cache, fetch a small subset by searching for similar titles
+        if not wp_listings and wp_user and wp_pass:
+            try:
+                # Search WordPress by title (normalized)
+                def normalize_title(t):
+                    return t.lower().strip().replace("'", "").replace("-", " ").replace(".", "")
+                
+                search_title = normalize_title(sp_listing['title'])
+                page = 1
+                found_match = False
+                
+                while page <= 5 and not found_match:  # Search first 5 pages
+                    response = requests.get(
+                        f"{wp_url}/wp-json/wp/v2/listing",
+                        params={'per_page': 100, 'page': page, 'search': sp_listing['title'][:50]},
+                        auth=(wp_user, wp_pass),
+                        timeout=30
+                    )
+                    if response.status_code != 200:
+                        break
+                    
+                    listings = response.json()
+                    if not listings:
+                        break
+                    
+                    for listing in listings:
+                        wp_title = listing.get('title', {}).get('rendered', '')
+                        if normalize_title(wp_title) == search_title:
+                            # Found match by title
+                            sp_url = listing.get('acf', {}).get('senior_place_url') or listing.get('acf', {}).get('url', '')
+                            wp_listings[sp_listing['url']] = listing
+                            found_match = True
+                            break
+                    
+                    page += 1
+            except Exception as e:
+                pass
+        
+        # Compare
+        match_type = 'new'
+        wp_match = None
+        
+        # First check by URL
+        if sp_listing['url'] in wp_listings:
+            match_type = 'exists'
+            wp_match = wp_listings[sp_listing['url']]
+        else:
+            # Check by title
+            def normalize_title(t):
+                return t.lower().strip().replace("'", "").replace("-", " ").replace(".", "")
+            
+            sp_title_norm = normalize_title(sp_listing['title'])
+            for wp_url_key, wp_listing in wp_listings.items():
+                wp_title = wp_listing.get('title', {}).get('rendered', '')
+                if normalize_title(wp_title) == sp_title_norm:
+                    match_type = 'exists_by_title'
+                    wp_match = wp_listing
+                    break
+        
+        return jsonify({
+            'sp_listing': sp_listing,
+            'match_type': match_type,  # 'new', 'exists', 'exists_by_title'
+            'wp_listing': wp_match,
+            'message': {
+                'new': 'This is a NEW listing not found in WordPress',
+                'exists': 'This listing already exists in WordPress (matched by URL)',
+                'exists_by_title': 'A listing with the same title exists in WordPress (different URL)'
+            }.get(match_type, 'Unknown status')
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to compare listing: {str(e)}'}), 500
 
 @app.route('/api/run-scraper', methods=['POST'])
 def api_run_scraper():

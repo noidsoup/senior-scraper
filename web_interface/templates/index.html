@@ -334,6 +334,7 @@
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('scraper')">🔍 Find Communities 👴</button>
                 <button class="tab" onclick="switchTab('single')">📌 Single Listing</button>
+                <button class="tab" onclick="switchTab('compare')">🔍 Compare Listing</button>
                 <button class="tab" onclick="switchTab('import')">📥 Add Communities 👵</button>
                 <button class="tab" onclick="switchTab('history')">📜 Search History</button>
                 <button class="tab" onclick="switchTab('test')">🧪 Check System</button>
@@ -360,6 +361,29 @@
 
                 <div id="single-status" style="margin-top: 1rem;"></div>
                 <div id="single-preview" style="margin-top: 1rem;"></div>
+            </div>
+
+            <!-- Compare Single Listing Tab -->
+            <div id="tab-compare" class="tab-content">
+                <h2>🔍 Compare Single Listing with WordPress</h2>
+                <p style="margin-bottom: 1.5rem; color: #666;">
+                    Fetch a Senior Place listing and compare it with cached WordPress listings to see if it's new, updated, or already exists.
+                </p>
+
+                <div class="form-group">
+                    <label>Senior Place Listing URL:</label>
+                    <input type="text" class="form-control" id="compare-url" placeholder="https://app.seniorplace.com/communities/show/..." style="font-family: monospace; font-size: 0.9rem;">
+                    <small style="display: block; margin-top: 0.5rem; color: #999;">
+                        Example: https://app.seniorplace.com/communities/show/6b552075-435a-45f2-8017-9d1508054958
+                    </small>
+                </div>
+
+                <button class="button" id="btn-compare" onclick="compareSingleListing()">
+                    🔍 Compare with WordPress
+                </button>
+
+                <div id="compare-status" style="margin-top: 1rem;"></div>
+                <div id="compare-result" style="margin-top: 1rem;"></div>
             </div>
 
             <!-- Scraper Tab -->
@@ -614,6 +638,148 @@
             `;
         }
 
+        async function compareSingleListing() {
+            const button = document.getElementById('btn-compare');
+            const statusDiv = document.getElementById('compare-status');
+            const resultDiv = document.getElementById('compare-result');
+            const url = document.getElementById('compare-url').value.trim();
+            
+            if (!url) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Please enter a Senior Place URL</div>';
+                return;
+            }
+            
+            if (!url.includes('seniorplace.com') || !url.includes('/show/')) {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Invalid URL. Must be a Senior Place community URL (contains /show/)</div>';
+                return;
+            }
+            
+            button.disabled = true;
+            statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Fetching and comparing listing...</p></div>';
+            resultDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/compare-single-listing', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ url })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const spListing = data.sp_listing;
+                    const matchType = data.match_type;
+                    const wpListing = data.wp_listing;
+                    const message = data.message;
+                    
+                    let statusClass = 'alert-info';
+                    let statusIcon = 'ℹ️';
+                    if (matchType === 'new') {
+                        statusClass = 'alert-success';
+                        statusIcon = '🆕';
+                    } else if (matchType === 'exists' || matchType === 'exists_by_title') {
+                        statusClass = 'alert-warning';
+                        statusIcon = '⚠️';
+                    }
+                    
+                    statusDiv.innerHTML = `<div class="alert ${statusClass}">${statusIcon} ${message}</div>`;
+                    
+                    // Build comparison display
+                    let comparisonHtml = `
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+                            <h3 style="margin-bottom: 1rem;">Senior Place Listing</h3>
+                            <table class="table" style="background: white; margin-bottom: 1.5rem;">
+                                <tr>
+                                    <td><strong>Title:</strong></td>
+                                    <td>${spListing.title || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Address:</strong></td>
+                                    <td>${spListing.address || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>City:</strong></td>
+                                    <td>${spListing.city || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>State:</strong></td>
+                                    <td>${spListing.state || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ZIP:</strong></td>
+                                    <td>${spListing.zip || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Care Types:</strong></td>
+                                    <td>${spListing.care_types || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Monthly Base Price:</strong></td>
+                                    <td>${spListing.monthly_base_price || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Price (High End):</strong></td>
+                                    <td>${spListing.price_high_end || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Second Person Fee:</strong></td>
+                                    <td>${spListing.second_person_fee || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>URL:</strong></td>
+                                    <td><code style="background: #f0f0f0; padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.85rem;">${spListing.url}</code></td>
+                                </tr>
+                            </table>
+                    `;
+                    
+                    if (wpListing) {
+                        const wpTitle = wpListing.title?.rendered || 'N/A';
+                        const wpId = wpListing.id || 'N/A';
+                        const wpLink = wpListing.link || '#';
+                        const wpSpUrl = wpListing.acf?.senior_place_url || wpListing.acf?.url || 'N/A';
+                        
+                        comparisonHtml += `
+                            <h3 style="margin-bottom: 1rem; margin-top: 1.5rem;">WordPress Match</h3>
+                            <table class="table" style="background: white;">
+                                <tr>
+                                    <td><strong>WordPress ID:</strong></td>
+                                    <td>${wpId}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Title:</strong></td>
+                                    <td>${wpTitle}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Senior Place URL:</strong></td>
+                                    <td><code style="background: #f0f0f0; padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.85rem;">${wpSpUrl}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>View in WordPress:</strong></td>
+                                    <td><a href="${wpLink}" target="_blank">Open Listing</a></td>
+                                </tr>
+                            </table>
+                        `;
+                    } else {
+                        comparisonHtml += `
+                            <div style="background: #d4edda; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                                <strong>✅ This is a new listing!</strong> It can be imported to WordPress.
+                            </div>
+                        `;
+                    }
+                    
+                    comparisonHtml += `</div>`;
+                    resultDiv.innerHTML = comparisonHtml;
+                } else {
+                    statusDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${data.error || 'Failed to compare listing'}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="alert alert-danger">❌ Error: ${error.message}</div>`;
+            } finally {
+                button.disabled = false;
+            }
+        }
+
         async function fetchSingleListing() {
             const button = document.getElementById('btn-fetch-single');
             const statusDiv = document.getElementById('single-status');
@@ -857,7 +1023,9 @@
                         
                         if (logData.content !== lastLogContent) {
                             lastLogContent = logData.content;
-                            const orderedLog = (logData.content || '').split(/\r?\n/).join('\n');
+                            // Display logs in descending order (newest first, oldest last)
+                            const lines = (logData.content || '').split(/\r?\n/).filter(line => line.trim());
+                            const orderedLog = lines.reverse().join('\n');
                             // Check if we already have the stop button
                             const existingButton = logDiv.querySelector('button.button-danger');
                             if (!existingButton) {
@@ -868,7 +1036,7 @@
                                             ⏹️ STOP
                                         </button>
                                     </div>
-                                    <div class="log-viewer" id="log-content-${processName}" style="max-height: 600px; white-space: pre-wrap;">${escapeHtml(orderedLog)}</div>
+                                    <div class="log-viewer" id="log-content-${processName}" style="max-height: 600px; white-space: pre-wrap; overflow-y: auto;">${escapeHtml(orderedLog)}</div>
                                 `;
                             } else {
                                 // Just update the log content
@@ -877,9 +1045,9 @@
                                     logContent.textContent = orderedLog;
                                 }
                             }
-                            // Scroll to bottom
+                            // Scroll to top to show newest entries (logs are in descending order)
                             const viewer = logDiv.querySelector('.log-viewer');
-                            if (viewer) viewer.scrollTop = viewer.scrollHeight;
+                            if (viewer) viewer.scrollTop = 0;
                         }
 
                         // Check again in 2 seconds
@@ -891,14 +1059,16 @@
                         // Fetch final log
                         const logResponse = await fetch(`/api/logs/${data.log_file}`);
                         const logData = await logResponse.json();
-                        const orderedLog = (logData.content || '').split(/\r?\n/).join('\n');
+                        // Display logs in descending order (newest first, oldest last)
+                        const lines = (logData.content || '').split(/\r?\n/).filter(line => line.trim());
+                        const orderedLog = lines.reverse().join('\n');
                         
                         logDiv.innerHTML = `
                             <div class="alert ${data.status === 'completed' ? 'alert-success' : 'alert-danger'}">
                                 ${data.status === 'completed' ? '✅ Process completed successfully!' : '❌ Process failed or was stopped!'}
                             </div>
-                            <h3>Full Log:</h3>
-                            <div class="log-viewer" style="white-space: pre-wrap;">${escapeHtml(orderedLog)}</div>
+                            <h3>Full Log (newest first):</h3>
+                            <div class="log-viewer" style="white-space: pre-wrap; max-height: 600px; overflow-y: auto;">${escapeHtml(orderedLog)}</div>
                         `;
 
                         // Reload status

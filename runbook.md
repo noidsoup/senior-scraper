@@ -33,6 +33,9 @@
 - WordPress listings are cached locally to speed duplicate checks.
 - Senior Place enrichment runs per listing; pagination uses `button:has-text("Next")`.
 
+## Guiding principle (safety)
+- Do not jeopardize access to Senior Place. Keep automation polite: respect login, avoid aggressive concurrency, and stop immediately if the UI or responses indicate throttling or blocks. Favor slower, reliable operation over risk of ban.
+
 ## Outputs
 - `monthly_updates/<timestamp>/` contains `new_listings_*.csv`, `updated_listings_*.csv`, `update_summary_*.json`, `raw/*.json`, and `resume_checkpoint.json`.
 
