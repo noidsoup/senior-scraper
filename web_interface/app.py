@@ -175,6 +175,27 @@ def get_available_csv_files():
     
     return sorted(csv_files, key=lambda x: x['modified'], reverse=True)[:20]
 
+# App version helper
+def get_app_version():
+    """Return app version from APP_VERSION env or git short hash."""
+    if hasattr(app, "_app_version"):
+        return app._app_version
+    
+    env_version = os.getenv("APP_VERSION")
+    if env_version:
+        app._app_version = env_version.strip()
+        return app._app_version
+    
+    try:
+        git_ver = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=get_project_root()
+        )
+        app._app_version = git_ver.decode().strip()
+    except Exception:
+        app._app_version = "unknown"
+    return app._app_version
+
 @app.route('/')
 def index():
     """Main dashboard"""
@@ -202,6 +223,7 @@ def api_status():
         'wordpress': wp_stats,
         'csv_files': csv_files,
         'environment': env_status,
+        'app_version': get_app_version(),
         'running_processes': list(set(active_processes)),
         'recovered_processes': recovered
     })
