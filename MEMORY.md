@@ -52,7 +52,7 @@
 - Import to WordPress and verify listings
 
 ## Notes
-- Senior Place login: `allison@aplaceforseniors.org`
+- Senior Place credentials: stored in `wp_config.env` (not in repo)
 - Pagination uses `button:has-text("Next")` (not `<a>` links)
 - Address extraction: Details tab has form inputs for address/city/state/zip
 - Image extraction: Use community images, convert `/api/files/` to CDN URLs
