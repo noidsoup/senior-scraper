@@ -48,6 +48,38 @@ running_processes = {}
 # File to persist process state across reloads
 PROCESS_STATE_FILE = Path(__file__).parent / 'logs' / 'process_state.json'
 
+# CANONICAL CARE TYPE MAPPING - must match orchestrator exactly
+CARE_TYPE_MAPPING = {
+    # Senior Place type (lowercase) -> WordPress canonical type
+    'assisted living facility': 'Assisted Living Community',
+    'assisted living home': 'Assisted Living Home',
+    'independent living': 'Independent Living',
+    'memory care': 'Memory Care',
+    'skilled nursing': 'Nursing Home',
+    'continuing care retirement community': 'Assisted Living Community',
+    'in-home care': 'Home Care',
+    'home health': 'Home Care',
+    'hospice': 'Home Care',
+    'respite care': 'Assisted Living Community',
+    'directed care': 'Assisted Living Home',  # Arizona-specific
+    'personal care': 'Assisted Living Home',  # Care service type
+    'supervisory care': 'Assisted Living Home',  # Care service type
+}
+
+def map_care_types_to_canonical(care_types_list):
+    """
+    Map raw Senior Place care types to WordPress canonical types.
+    Filters out non-care-types (room types, bathroom types, etc.)
+    """
+    canonical = []
+    for ct in care_types_list:
+        ct_lower = ct.lower().strip()
+        if ct_lower in CARE_TYPE_MAPPING:
+            mapped = CARE_TYPE_MAPPING[ct_lower]
+            if mapped not in canonical:
+                canonical.append(mapped)
+    return canonical
+
 def save_process_state():
     """Save running process info to disk for reload recovery"""
     state = {}
@@ -635,13 +667,17 @@ def api_fetch_single_listing():
                     
                     await browser.close()
                     
+                    # Map to canonical care types (filters out room types, etc.)
+                    canonical_types = map_care_types_to_canonical(care_types)
+                    
                     return {
                         'title': title.strip(),
                         'address': address.strip(),
                         'city': city.strip(),
                         'state': state.strip(),
                         'zip': zip_code.strip(),
-                        'care_types': ', '.join(care_types) if care_types else '',
+                        'care_types': ', '.join(canonical_types) if canonical_types else '',
+                        'care_types_raw': ', '.join(care_types) if care_types else '',
                         'monthly_base_price': pricing_and_desc.get('monthly_base_price', ''),
                         'price_high_end': pricing_and_desc.get('price_high_end', ''),
                         'second_person_fee': pricing_and_desc.get('second_person_fee', ''),
@@ -916,13 +952,17 @@ def api_compare_single_listing():
                     
                     await browser.close()
                     
+                    # Map to canonical care types (filters out room types, etc.)
+                    canonical_types = map_care_types_to_canonical(care_types)
+                    
                     return {
                         'title': title.strip(),
                         'address': address.strip(),
                         'city': city.strip(),
                         'state': state.strip(),
                         'zip': zip_code.strip(),
-                        'care_types': ', '.join(care_types) if care_types else '',
+                        'care_types': ', '.join(canonical_types) if canonical_types else '',
+                        'care_types_raw': ', '.join(care_types) if care_types else '',
                         'monthly_base_price': pricing.get('monthly_base_price', ''),
                         'price_high_end': pricing.get('price_high_end', ''),
                         'second_person_fee': pricing.get('second_person_fee', ''),

@@ -612,9 +612,11 @@ class MonthlyUpdateOrchestrator:
         output_dir = Path("monthly_updates") / self.timestamp
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Map care types to canonical
+        # Map care types to canonical WordPress taxonomy
+        # CANONICAL MAPPING - only these are valid care types for WordPress
         def map_care_types(care_types_list):
             TYPE_MAPPING = {
+                # Senior Place type -> WordPress canonical type
                 'assisted living facility': 'Assisted Living Community',
                 'assisted living home': 'Assisted Living Home',
                 'independent living': 'Independent Living',
@@ -625,13 +627,19 @@ class MonthlyUpdateOrchestrator:
                 'home health': 'Home Care',
                 'hospice': 'Home Care',
                 'respite care': 'Assisted Living Community',
-                'directed care': 'Assisted Living Home',  # Arizona-specific, maps to ALH
+                'directed care': 'Assisted Living Home',  # Arizona-specific
+                'personal care': 'Assisted Living Home',  # Care service type
+                'supervisory care': 'Assisted Living Home',  # Care service type
             }
+            # Only include types that map to valid canonical care types
+            # This filters out room types (Studio, One Bedroom, etc.) and bathroom types (Shared, Private)
             canonical = []
             for ct in care_types_list:
-                mapped = TYPE_MAPPING.get(ct.lower(), ct)
-                if mapped not in canonical:
-                    canonical.append(mapped)
+                ct_lower = ct.lower().strip()
+                if ct_lower in TYPE_MAPPING:
+                    mapped = TYPE_MAPPING[ct_lower]
+                    if mapped not in canonical:
+                        canonical.append(mapped)
             return ', '.join(canonical)
         
         # NEW LISTINGS CSV
