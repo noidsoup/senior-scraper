@@ -36,6 +36,29 @@ python monthly_scrapers/monthly_update_orchestrator.py \
     --wp-password "$WP_PASSWORD"
 ```
 
+### Option C: Web Dashboard (BEST - One Click!)
+
+The **recommended way** - complete visual interface with real-time progress:
+
+```bash
+start_dashboard.bat  # Windows
+# or
+./start_dashboard.sh  # Mac/Linux
+```
+
+**Features:**
+- ✅ **One-click import** with pre-verification
+- ✅ **Real-time progress** bars and logs
+- ✅ **Upload or select** existing CSV files
+- ✅ **Safe batch processing** with error recovery
+- ✅ **Visual status** - no command line needed!
+
+Open `http://localhost:5000` → **"Add Communities"** tab → Done!
+
+### Option D: Command Line (Advanced)
+
+For automated scripts or headless operation:
+
 ## 📊 What It Does
 
 | Step | Action | Output |
@@ -159,6 +182,7 @@ curl -u "user:pass" "https://your-site/wp-json/wp/v2/listing?per_page=1"
 | [User Guide](docs/USER_GUIDE.md) | Complete usage instructions |
 | [Quick Reference](docs/QUICK_REFERENCE.md) | One-page cheat sheet |
 | [Developer Guide](docs/DEVELOPER.md) | Contributing & architecture |
+| [Reliable Import](IMPORT_RELIABLE.md) | Guaranteed import process |
 
 ## 🔒 Security
 

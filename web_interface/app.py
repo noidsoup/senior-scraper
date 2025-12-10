@@ -1350,7 +1350,7 @@ def api_run_import():
         # Build command (use -u for unbuffered output)
         cmd = [
             sys.executable, '-u',
-            str(project_root / 'import_to_wordpress_api_safe.py'),
+            str(project_root / 'import_to_wordpress_api.py'),
             str(csv_path),
             '--batch-size', str(batch_size)
         ]
@@ -1489,9 +1489,42 @@ def api_get_log(log_file):
             content = f.read()
         
         return jsonify({'content': content})
-        
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/pre-import-check', methods=['POST'])
+def api_pre_import_check():
+    """Run pre-import verification checks"""
+    try:
+        project_root = get_project_root()
+
+        # Run the pre-import check script
+        result = subprocess.run(
+            [sys.executable, '-u', str(project_root / 'pre_import_check.py')],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd=project_root
+        )
+
+        if result.returncode == 0:
+            return jsonify({
+                'success': True,
+                'message': 'Pre-import checks passed successfully'
+            })
+        else:
+            # Extract error from output
+            error_msg = result.stderr.strip() or result.stdout.strip() or 'Unknown error'
+            return jsonify({
+                'success': False,
+                'error': error_msg
+            }), 400
+
+    except subprocess.TimeoutExpired:
+        return jsonify({'success': False, 'error': 'Pre-import check timed out'}), 500
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/test-connection')
 def api_test_connection():

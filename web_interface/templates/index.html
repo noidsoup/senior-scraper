@@ -568,9 +568,14 @@
                     <input type="number" class="form-control" id="import-limit" placeholder="Leave blank for all">
                 </div>
 
-                <button class="button" id="btn-run-import" onclick="runImport()">
-                    📥 Add Communities
-                </button>
+                <div style="margin: 1rem 0;">
+                    <button class="button button-secondary" id="btn-precheck-import" onclick="runPreImportCheck()" style="margin-right: 0.5rem;">
+                        🔍 Pre-Import Check
+                    </button>
+                    <button class="button" id="btn-run-import" onclick="runImport()">
+                        📥 Add Communities
+                    </button>
+                </div>
 
                 <div id="import-status" style="margin-top: 1rem;"></div>
                 <div id="import-log" style="margin-top: 1rem;"></div>
@@ -1177,6 +1182,46 @@
                 logDiv.innerHTML = '';
                 button.disabled = false;
             }
+        }
+
+        async function runPreImportCheck() {
+            const statusDiv = document.getElementById('import-status');
+            const button = document.getElementById('btn-precheck-import');
+
+            button.disabled = true;
+            statusDiv.innerHTML = '<div class="alert alert-info">🔍 Running pre-import verification...</div>';
+
+            try {
+                const response = await fetch('/api/pre-import-check', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    statusDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            ✅ Pre-import check passed! System is ready.<br>
+                            <strong>Next:</strong> Click "Add Communities" to start importing.
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            ❌ Pre-import check failed:<br>
+                            ${data.error || 'Unknown error'}<br><br>
+                            <strong>Please fix the issues above before importing.</strong>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="alert alert-danger">❌ Pre-check error: ${error.message}</div>`;
+            }
+
+            button.disabled = false;
         }
 
         async function runImport() {
