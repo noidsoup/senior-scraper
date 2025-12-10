@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Senior Scraper Dashboard</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
         :root {
             /* Light theme */
@@ -620,6 +621,121 @@
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
         });
+
+        // WebSocket for real-time progress updates
+        const socket = io();
+        let currentPhase = null;
+
+        socket.on('connect', () => {
+            console.log('Connected to progress updates');
+            socket.emit('start_progress_monitoring');
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Disconnected from progress updates');
+        });
+
+        socket.on('wordpress_loaded', (data) => {
+            updateProgressDisplay('Loading WordPress data...', 10);
+            showProgressMessage(`📊 Loaded ${data.wp_listings_count} existing WordPress listings`);
+        });
+
+        socket.on('state_scraped', (data) => {
+            const progress = data.percentage;
+            updateProgressDisplay(`Scraping ${data.state_name}... (${data.states_completed}/${data.states_total})`, progress);
+            showProgressMessage(`✅ ${data.state}: ${data.listings_found} listings found`);
+        });
+
+        socket.on('enrichment_started', (data) => {
+            updateProgressDisplay('Enriching listings with details...', 60);
+            showProgressMessage(`🔄 Starting enrichment of ${data.total_to_enrich} listings`);
+        });
+
+        socket.on('enrichment_completed', (data) => {
+            updateProgressDisplay('Enrichment complete, analyzing changes...', 80);
+            showProgressMessage(`✅ Enriched ${data.total_enriched}/${data.total_listings} listings`);
+        });
+
+        socket.on('comparison_completed', (data) => {
+            updateProgressDisplay('Generating import files...', 90);
+            showProgressMessage(`📋 Found ${data.new_listings} new, ${data.updated_listings} updated listings`);
+        });
+
+        socket.on('files_generated', (data) => {
+            updateProgressDisplay('Update complete!', 100);
+            showProgressMessage(`📁 Import files generated in: ${data.output_dir}`);
+        });
+
+        socket.on('update_complete', (data) => {
+            updateProgressDisplay('✅ Update Complete!', 100);
+            showProgressMessage(`🎉 Process finished! Stats: ${JSON.stringify(data.stats, null, 2)}`);
+            setTimeout(() => hideProgressDisplay(), 5000); // Hide after 5 seconds
+        });
+
+        socket.on('error', (data) => {
+            showProgressMessage(`❌ Error in ${data.phase}: ${data.error}`, 'error');
+        });
+
+        function updateProgressDisplay(message, percentage) {
+            let progressContainer = document.getElementById('progress-container');
+            if (!progressContainer) {
+                progressContainer = document.createElement('div');
+                progressContainer.id = 'progress-container';
+                progressContainer.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--card-bg);
+                    border: 2px solid var(--button-primary);
+                    border-radius: 8px;
+                    padding: 15px;
+                    box-shadow: 0 4px 12px var(--shadow);
+                    z-index: 1000;
+                    min-width: 300px;
+                `;
+
+                progressContainer.innerHTML = `
+                    <div style="margin-bottom: 10px; font-weight: bold;">🔄 Real-time Progress</div>
+                    <div id="progress-message" style="margin-bottom: 10px; font-size: 14px;">${message}</div>
+                    <div style="background: var(--card-border); border-radius: 4px; height: 8px; overflow: hidden;">
+                        <div id="progress-bar" style="background: var(--button-primary); height: 100%; width: ${percentage}%; transition: width 0.3s ease;"></div>
+                    </div>
+                    <div id="progress-percentage" style="text-align: center; margin-top: 5px; font-size: 12px; color: var(--text-color); opacity: 0.7;">${percentage}%</div>
+                    <div id="progress-details" style="margin-top: 10px; font-size: 12px; max-height: 100px; overflow-y: auto;"></div>
+                `;
+
+                document.body.appendChild(progressContainer);
+            } else {
+                document.getElementById('progress-message').textContent = message;
+                document.getElementById('progress-bar').style.width = percentage + '%';
+                document.getElementById('progress-percentage').textContent = percentage + '%';
+            }
+        }
+
+        function showProgressMessage(message, type = 'info') {
+            const detailsDiv = document.getElementById('progress-details');
+            if (detailsDiv) {
+                const messageDiv = document.createElement('div');
+                messageDiv.style.cssText = `
+                    padding: 3px 0;
+                    font-size: 11px;
+                    border-bottom: 1px solid var(--card-border);
+                    color: ${type === 'error' ? 'var(--error-color)' : 'var(--text-color)'};
+                    opacity: 0.8;
+                `;
+                const timestamp = new Date().toLocaleTimeString();
+                messageDiv.textContent = `[${timestamp}] ${message}`;
+                detailsDiv.appendChild(messageDiv);
+                detailsDiv.scrollTop = detailsDiv.scrollHeight;
+            }
+        }
+
+        function hideProgressDisplay() {
+            const progressContainer = document.getElementById('progress-container');
+            if (progressContainer) {
+                progressContainer.remove();
+            }
+        }
 
         // Load initial status
         loadStatus();

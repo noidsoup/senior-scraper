@@ -5,6 +5,7 @@ A visual dashboard for managing scraping, comparison, and import operations
 """
 
 from flask import Flask, render_template, jsonify, request, send_file
+from flask_socketio import SocketIO, emit
 from pathlib import Path
 import subprocess
 import json
@@ -42,11 +43,182 @@ load_env_file()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'senior-scraper-dashboard-2024'
 
+# Initialize SocketIO for real-time updates
+socketio = SocketIO(app, cors_allowed_origins="*")
+
 # Track running processes
 running_processes = {}
 
 # File to persist process state across reloads
 PROCESS_STATE_FILE = Path(__file__).parent / 'logs' / 'process_state.json'
+
+
+class ProgressEmitter:
+    """Handles real-time progress updates via WebSocket"""
+
+    def __init__(self):
+        self.socketio = socketio
+
+    def emit_progress(self, event: str, data: dict, room: str = None):
+        """Emit progress event to connected clients"""
+        try:
+            self.socketio.emit(event, data, room=room)
+        except Exception as e:
+            print(f"Failed to emit progress event {event}: {e}")
+
+    def emit_scrape_progress(self, state: str, current_page: int, total_pages: int,
+                           listings_found: int, phase: str = "scraping"):
+        """Emit scraping progress"""
+        progress_data = {
+            'state': state,
+            'current_page': current_page,
+            'total_pages': total_pages,
+            'listings_found': listings_found,
+            'phase': phase,
+            'timestamp': datetime.now().isoformat()
+        }
+        self.emit_progress('scrape_progress', progress_data)
+
+    def emit_enrichment_progress(self, processed: int, total: int, successful: int,
+                               failed: int, phase: str = "enrichment"):
+        """Emit enrichment progress"""
+        progress_data = {
+            'processed': processed,
+            'total': total,
+            'successful': successful,
+            'failed': failed,
+            'phase': phase,
+            'percentage': int((processed / total) * 100) if total > 0 else 0,
+            'timestamp': datetime.now().isoformat()
+        }
+        self.emit_progress('enrichment_progress', progress_data)
+
+    def emit_import_progress(self, processed: int, total: int, successful: int,
+                           failed: int, phase: str = "import"):
+        """Emit import progress"""
+        progress_data = {
+            'processed': processed,
+            'total': total,
+            'successful': successful,
+            'failed': failed,
+            'phase': phase,
+            'percentage': int((processed / total) * 100) if total > 0 else 0,
+            'timestamp': datetime.now().isoformat()
+        }
+        self.emit_progress('import_progress', progress_data)
+
+    def emit_completion(self, phase: str, stats: dict, success: bool = True):
+        """Emit completion event"""
+        completion_data = {
+            'phase': phase,
+            'success': success,
+            'stats': stats,
+            'timestamp': datetime.now().isoformat()
+        }
+        self.emit_progress('phase_complete', completion_data)
+
+    def emit_error(self, phase: str, error: str, details: dict = None):
+        """Emit error event"""
+        error_data = {
+            'phase': phase,
+            'error': error,
+            'details': details or {},
+            'timestamp': datetime.now().isoformat()
+        }
+        self.emit_progress('error', error_data)
+
+
+# Global progress emitter instance
+progress_emitter = ProgressEmitter()
+
+# Progress monitoring
+progress_file = Path(__file__).parent / 'logs' / 'progress.json'
+progress_monitoring = {'active': False, 'last_update': None}
+
+
+def monitor_progress():
+    """Background thread to monitor progress file and emit WebSocket events"""
+    import time
+
+    while progress_monitoring['active']:
+        try:
+            if progress_file.exists():
+                with open(progress_file, 'r') as f:
+                    progress_data = json.load(f)
+
+                # Check if this is a new update
+                update_key = f"{progress_data.get('phase')}_{progress_data.get('timestamp')}"
+                if update_key != progress_monitoring['last_update']:
+                    progress_monitoring['last_update'] = update_key
+
+                    # Emit the progress event
+                    phase = progress_data.get('phase')
+                    data = progress_data.get('data', {})
+
+                    if phase == 'wordpress_loaded':
+                        progress_emitter.emit_progress('wordpress_loaded', data)
+                    elif phase == 'state_scraped':
+                        progress_emitter.emit_scrape_progress(
+                            data['state'],
+                            data.get('states_completed', 0),
+                            data.get('states_total', 0),
+                            data.get('total_scraped', 0)
+                        )
+                    elif phase == 'enrichment_started':
+                        progress_emitter.emit_progress('enrichment_started', data)
+                    elif phase == 'enrichment_completed':
+                        progress_emitter.emit_enrichment_progress(
+                            data.get('total_enriched', 0),
+                            data.get('total_listings', 0),
+                            data.get('total_enriched', 0),
+                            0
+                        )
+                    elif phase == 'comparison_completed':
+                        progress_emitter.emit_progress('comparison_completed', data)
+                    elif phase == 'files_generated':
+                        progress_emitter.emit_progress('files_generated', data)
+                    elif phase == 'update_complete':
+                        progress_emitter.emit_completion('full_update', data['stats'])
+
+        except Exception as e:
+            print(f"Error monitoring progress: {e}")
+
+        time.sleep(1)  # Check every second
+
+
+@socketio.on('connect')
+def handle_connect():
+    """Handle client connection"""
+    print(f"Client connected: {request.sid}")
+    emit('connected', {'status': 'connected'})
+
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    """Handle client disconnection"""
+    print(f"Client disconnected: {request.sid}")
+
+
+@socketio.on('start_progress_monitoring')
+def handle_start_monitoring():
+    """Start monitoring progress updates"""
+    if not progress_monitoring['active']:
+        progress_monitoring['active'] = True
+        progress_monitoring['last_update'] = None
+
+        # Start monitoring thread
+        import threading
+        monitor_thread = threading.Thread(target=monitor_progress, daemon=True)
+        monitor_thread.start()
+
+        emit('monitoring_started', {'status': 'monitoring'})
+
+
+@socketio.on('stop_progress_monitoring')
+def handle_stop_monitoring():
+    """Stop monitoring progress updates"""
+    progress_monitoring['active'] = False
+    emit('monitoring_stopped', {'status': 'stopped'})
 
 # Import from core module
 from core import map_care_types_to_canonical
@@ -1038,7 +1210,7 @@ def api_run_scraper():
     """Start scraper process"""
     data = request.json
     states = data.get('states', ['AZ', 'CA', 'CO', 'ID', 'NM', 'UT'])
-    
+
     # Check if already running
     if 'scraper' in running_processes:
         proc_info = running_processes['scraper']
@@ -1049,6 +1221,10 @@ def api_run_scraper():
             # Process died but wasn't cleaned up, remove it
             del running_processes['scraper']
         # Fall through to start new one
+
+    # Start progress monitoring
+    progress_monitoring['active'] = True
+    progress_monitoring['last_update'] = None
     
     try:
         project_root = get_project_root()

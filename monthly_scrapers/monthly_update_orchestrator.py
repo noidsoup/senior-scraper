@@ -42,6 +42,9 @@ from core import (
 # Import parallel enricher
 from scrapers.parallel_enricher import ParallelEnricher
 
+# Progress tracking for real-time updates
+PROGRESS_FILE = Path(__file__).parent.parent / 'web_interface' / 'logs' / 'progress.json'
+
 # Import existing scrapers
 import sys
 sys.path.append(str(Path(__file__).parent / "scrapers_active"))
@@ -84,6 +87,33 @@ class MonthlyUpdateOrchestrator:
         self.wp_cache_file = self.cache_dir / "wp_listings_cache.json"
         self.wp_cache_ttl = int(os.getenv("WP_CACHE_TTL_SECONDS", "3600"))
         self.disable_wp_cache = os.getenv("WP_CACHE_DISABLE", "0") == "1"
+
+    # ---------- Progress tracking for real-time updates ----------
+    def _write_progress(self, phase: str, data: dict):
+        """Write progress update to file for real-time dashboard updates"""
+        try:
+            progress_data = {
+                'phase': phase,
+                'timestamp': datetime.now().isoformat(),
+                'data': data
+            }
+
+            # Ensure directory exists
+            PROGRESS_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+            with open(PROGRESS_FILE, 'w', encoding='utf-8') as f:
+                json.dump(progress_data, f, indent=2)
+
+        except Exception as e:
+            self.log(f"Failed to write progress update: {e}", "WARNING")
+
+    def _clear_progress(self):
+        """Clear progress file"""
+        try:
+            if PROGRESS_FILE.exists():
+                PROGRESS_FILE.unlink()
+        except Exception as e:
+            self.log(f"Failed to clear progress file: {e}", "WARNING")
 
     # ---------- Checkpoint helpers ----------
     def _checkpoint_default_path(self) -> Path:
@@ -1031,14 +1061,35 @@ class MonthlyUpdateOrchestrator:
         states_remaining_codes = list(dict.fromkeys(states_remaining_codes))
         
         # Step 1: Fetch current WordPress data
+        self.log("Fetching current WordPress listings...")
         self.current_wp_listings = self.fetch_current_wordpress_listings()
+        wp_count = len(self.current_wp_listings)
+        self.log(f"Loaded {wp_count} existing WordPress listings")
+        self._write_progress('wordpress_loaded', {
+            'wp_listings_count': wp_count,
+            'states_to_scrape': len(states_remaining_codes)
+        })
         
         # Step 2: Scrape all states
-        for state_code in states_remaining_codes:
+        total_states = len(states_remaining_codes)
+        for i, state_code in enumerate(states_remaining_codes, 1):
             state_name = states_map.get(state_code, state_code)
+            self.log(f"Scraping {state_name} ({i}/{total_states})...")
+
             state_listings = await self.scrape_seniorplace_state(state_code, state_name)
             all_scraped_listings.extend(state_listings)
             self.stats['total_processed'] += len(state_listings)
+
+            # Progress update after each state
+            self._write_progress('state_scraped', {
+                'state': state_code,
+                'state_name': state_name,
+                'listings_found': len(state_listings),
+                'total_scraped': len(all_scraped_listings),
+                'states_completed': i,
+                'states_total': total_states,
+                'percentage': int((i / total_states) * 100)
+            })
 
             # Persist raw listings for resume
             raw_file = raw_dir / f"{state_code}.json"
@@ -1058,15 +1109,39 @@ class MonthlyUpdateOrchestrator:
             self._save_checkpoint(checkpoint_path, checkpoint_payload)
         
         # Step 3: Enrich with detailed data
+        self.log(f"Enriching {len(all_scraped_listings)} listings with detailed data...")
+        self._write_progress('enrichment_started', {
+            'total_to_enrich': len(all_scraped_listings)
+        })
+
         enriched_listings = await self.enrich_listing_details(all_scraped_listings)
+
+        self._write_progress('enrichment_completed', {
+            'total_enriched': len(enriched_listings),
+            'total_listings': len(all_scraped_listings)
+        })
         
         # Step 4: Identify new and updated
+        self.log("Identifying new and updated listings...")
         new_listings, updated_listings = self.identify_new_and_updated(enriched_listings)
         self.new_listings = new_listings
         self.updated_listings = updated_listings
-        
+
+        self._write_progress('comparison_completed', {
+            'new_listings': len(new_listings),
+            'updated_listings': len(updated_listings),
+            'total_processed': len(enriched_listings)
+        })
+
         # Step 5: Generate import files
+        self.log("Generating WordPress import files...")
         output_dir = self.generate_wordpress_import_files(new_listings, updated_listings)
+
+        self._write_progress('files_generated', {
+            'output_dir': str(output_dir),
+            'new_csv': len(new_listings) > 0,
+            'updated_csv': len(updated_listings) > 0
+        })
         
         # Final summary
         self.log("=" * 80)
@@ -1075,6 +1150,16 @@ class MonthlyUpdateOrchestrator:
         self.log(f"📊 Total listings processed: {self.stats['total_processed']}")
         self.log(f"🆕 New listings found: {self.stats['new_listings_found']}")
         self.log(f"🔄 Listings updated: {self.stats['listings_updated']}")
+
+        # Final progress update
+        self._write_progress('update_complete', {
+            'stats': self.stats,
+            'output_dir': str(output_dir),
+            'duration_seconds': (datetime.now() - datetime.strptime(self.timestamp, "%Y%m%d_%H%M%S")).total_seconds()
+        })
+
+        # Clear progress file after completion
+        self._clear_progress()
         self.log(f"💰 Pricing updates: {self.stats['pricing_updates']}")
         self.log(f"🏥 Care type updates: {self.stats['care_type_updates']}")
         self.log(f"❌ Failed scrapes: {self.stats['failed_scrapes']}")
