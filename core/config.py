@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     max_pages_per_state: int = 0  # 0 = unlimited
     request_delay_ms: int = 500
     max_retries: int = 3
-    max_concurrent_enrichment: int = 5
+    max_concurrent_enrichment: int = 3
     
     # Paths
     output_dir: str = "monthly_updates"
