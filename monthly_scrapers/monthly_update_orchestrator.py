@@ -36,7 +36,11 @@ from core import (
     SeniorScraperError,
     AuthenticationError,
     RateLimitError,
+    get_settings,
 )
+
+# Import parallel enricher
+from scrapers.parallel_enricher import ParallelEnricher
 
 # Import existing scrapers
 import sys
@@ -426,7 +430,9 @@ class MonthlyUpdateOrchestrator:
                                             zip_code = parts[-1]
                             
                             # Filter to only include listings from this state
-                            if state_code in (address + city + state) or state_name in (address + city + state):
+                            # Check individual fields to avoid substring collisions (e.g., "Blazer Ave" contains "AZ")
+                            location_text = f"{address} {city} {state}".lower()
+                            if state_code.lower() in location_text or state_name.lower() in location_text:
                                 listings.append({
                                     'title': title,
                                     'url': url,
@@ -823,25 +829,26 @@ class MonthlyUpdateOrchestrator:
                             self.stats['care_type_updates'] += 1
                     except Exception as e:
                         # Date parsing failed, fall back to care type comparison
-                        pass
-                else:
-                    # Fallback: Check care type changes if no date comparison available
-                    if listing.get('care_types'):
-                        # Get current care types from WordPress
-                        wp_care_types = []
-                        if 'acf' in wp_listing and 'care_types' in wp_listing['acf']:
-                            wp_care_types = wp_listing['acf']['care_types']
-                        elif 'meta' in wp_listing and '_care_types' in wp_listing['meta']:
-                            wp_care_types = wp_listing['meta']['_care_types']
+                        self.log(f"Failed to parse last_updated date for {listing.get('title', 'Unknown')}: {e}", "DEBUG")
+                        # Fall back to care type comparison below
 
-                        # Normalize both sets for comparison
-                        current_normalized = self._normalize_care_types(wp_care_types)
-                        new_normalized = self._normalize_care_types(listing['care_types'])
+                # Fallback: Check care type changes if no date available or date parsing failed
+                if not updates_needed.get('care_types') and listing.get('care_types'):
+                    # Get current care types from WordPress
+                    wp_care_types = []
+                    if 'acf' in wp_listing and 'care_types' in wp_listing['acf']:
+                        wp_care_types = wp_listing['acf']['care_types']
+                    elif 'meta' in wp_listing and '_care_types' in wp_listing['meta']:
+                        wp_care_types = wp_listing['meta']['_care_types']
 
-                        # Only update if care types actually changed
-                        if set(current_normalized) != set(new_normalized):
-                            updates_needed['care_types'] = listing['care_types']
-                            self.stats['care_type_updates'] += 1
+                    # Normalize both sets for comparison
+                    current_normalized = self._normalize_care_types(wp_care_types)
+                    new_normalized = self._normalize_care_types(listing['care_types'])
+
+                    # Only update if care types actually changed
+                    if set(current_normalized) != set(new_normalized):
+                        updates_needed['care_types'] = listing['care_types']
+                        self.stats['care_type_updates'] += 1
                 
                 if updates_needed:
                     listing['wp_id'] = wp_listing['id']
