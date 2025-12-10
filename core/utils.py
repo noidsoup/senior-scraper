@@ -2,8 +2,9 @@
 Shared utility functions
 """
 
+import re
 from typing import List, Optional
-from .constants import CARE_TYPE_MAPPING, NOISE_PATTERNS
+from .constants import CARE_TYPE_MAPPING, NOISE_PATTERNS, TITLE_BLOCKLIST_PATTERNS
 
 
 def map_care_types_to_canonical(care_types_list: Optional[List[str]]) -> List[str]:
@@ -50,4 +51,54 @@ def map_care_types_to_canonical(care_types_list: Optional[List[str]]) -> List[st
             canonical.append(mapped)
     
     return sorted(canonical)
+
+
+def should_block_title(title: str) -> bool:
+    """
+    Check if a listing title should be blocked from scraping/import.
+
+    Titles containing operational notes, restrictions, or non-standard content
+    should be filtered out to maintain data quality.
+
+    Args:
+        title: The listing title to check
+
+    Returns:
+        True if the title should be blocked, False otherwise
+    """
+    if not title:
+        return True
+
+    title_lower = title.lower().strip()
+
+    # Check against all blocklist patterns
+    for pattern in TITLE_BLOCKLIST_PATTERNS:
+        if re.search(pattern, title_lower, re.IGNORECASE):
+            return True
+
+    return False
+
+
+def clean_listing_title(title: str) -> str:
+    """
+    Clean and normalize a listing title by removing unwanted suffixes/comments.
+
+    Args:
+        title: Raw title from Senior Place
+
+    Returns:
+        Cleaned title suitable for import
+    """
+    if not title:
+        return ""
+
+    # Remove common unwanted suffixes
+    title = re.sub(r'\s*/.*', '', title)  # Remove everything after first slash
+    title = re.sub(r'\s*\.\.\..*', '', title)  # Remove trailing dots and comments
+    title = re.sub(r'\s*\([^)]*do not[^)]*\)', '', title, flags=re.IGNORECASE)  # Remove (do not...) comments
+
+    # Clean up extra whitespace
+    title = re.sub(r'\s+', ' ', title).strip()
+
+    return title
 

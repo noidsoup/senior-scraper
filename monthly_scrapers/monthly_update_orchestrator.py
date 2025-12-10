@@ -42,6 +42,9 @@ from core import (
 # Import parallel enricher
 from scrapers.parallel_enricher import ParallelEnricher
 
+# Import title filtering utilities
+from core import should_block_title, clean_listing_title
+
 # Progress tracking for real-time updates
 PROGRESS_FILE = Path(__file__).parent.parent / 'web_interface' / 'logs' / 'progress.json'
 
@@ -72,6 +75,7 @@ class MonthlyUpdateOrchestrator:
             'care_type_updates': 0,
             'description_updates': 0,
             'failed_scrapes': 0,
+            'blocked_titles': 0,
             'total_processed': 0
         }
         
@@ -410,6 +414,15 @@ class MonthlyUpdateOrchestrator:
                             title = (await name_el.inner_text()).strip()
                             href = await name_el.get_attribute("href")
                             url = f"https://app.seniorplace.com{href}"
+
+                            # Filter out problematic titles during scraping
+                            if should_block_title(title):
+                                self.log(f"Blocked listing with inappropriate title: '{title}'", "WARNING")
+                                self.stats['blocked_titles'] += 1
+                                continue
+
+                            # Clean the title
+                            title = clean_listing_title(title)
                             
                             # Extract image
                             img_el = await card.query_selector("img")

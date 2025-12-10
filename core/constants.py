@@ -69,3 +69,21 @@ BLOCKLIST_PATTERNS = [
     r"\bsurgical\b",
 ]
 
+# Title filtering patterns - exclude listings with these in titles during scraping
+TITLE_BLOCKLIST_PATTERNS = [
+    r"\bdo\s+not\s+refer\b",
+    r"\bdo\s+not\s+use\b",
+    r"\bnot\s+signing\b",
+    r"\bsurgery\b",
+    r"\bsurgical\b",
+    r"\btbi\b",  # Traumatic Brain Injury specific
+    r"\bonly\b.*\bagencies?\b",  # "only" + "agency/agencies"
+    r"\bnot\s+working\s+with\b",  # "not working with"
+    r"\betc\.+",  # "etc..."
+    r"\.\.\.+",  # Multiple dots (indicating trailing comments)
+    r"/.*only",  # Slash followed by "only"
+    r"\bprivate\s+only\b",  # "private only"
+    r"\breferral\s+only\b",  # "referral only"
+    r"\bspecific\s+clients?\b",  # "specific client(s)"
+]
+

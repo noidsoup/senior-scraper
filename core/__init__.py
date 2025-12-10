@@ -8,6 +8,7 @@ from .constants import (
     NOISE_PATTERNS,
     SUPPORTED_STATES,
     BLOCKLIST_PATTERNS,
+    TITLE_BLOCKLIST_PATTERNS,
     CANONICAL_CARE_TYPES,
 )
 from .models import Listing, ScrapeResult, ImportResult, ScrapeStats
@@ -19,7 +20,7 @@ from .exceptions import (
     DataValidationError,
     WordPressAPIError,
 )
-from .utils import map_care_types_to_canonical
+from .utils import map_care_types_to_canonical, should_block_title, clean_listing_title
 
 __all__ = [
     # Constants
@@ -27,6 +28,7 @@ __all__ = [
     'NOISE_PATTERNS',
     'SUPPORTED_STATES',
     'BLOCKLIST_PATTERNS',
+    'TITLE_BLOCKLIST_PATTERNS',
     'CANONICAL_CARE_TYPES',
     # Models
     'Listing',
@@ -44,5 +46,7 @@ __all__ = [
     'WordPressAPIError',
     # Utils
     'map_care_types_to_canonical',
+    'should_block_title',
+    'clean_listing_title',
 ]
 
