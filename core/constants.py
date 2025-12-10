@@ -71,6 +71,7 @@ BLOCKLIST_PATTERNS = [
 
 # Title filtering patterns - exclude listings with these in titles during scraping
 TITLE_BLOCKLIST_PATTERNS = [
+    # Original patterns
     r"\bdo\s+not\s+refer\b",
     r"\bdo\s+not\s+use\b",
     r"\bnot\s+signing\b",
@@ -85,5 +86,43 @@ TITLE_BLOCKLIST_PATTERNS = [
     r"\bprivate\s+only\b",  # "private only"
     r"\breferral\s+only\b",  # "referral only"
     r"\bspecific\s+clients?\b",  # "specific client(s)"
+
+    # Additional patterns for operational notes
+    r"\bnot\s+adding\b",
+    r"\bnot\s+accepting\b",
+    r"\bno\s+longer\s+accepting\b",
+    r"\bat\s+this\s+time\b",
+    r"\bcurrently\s+not\b",
+    r"\btemporarily\s+closed\b",
+    r"\bunder\s+construction\b",
+    r"\bcoming\s+soon\b",
+    r"\bcall\s+for\s+availability\b",
+    r"\breferral.*only\b",
+    r"\bonly.*referral\b",
+    r"\bagency.*only\b",
+    r"\bonly.*agency\b",
+    r"\bprivate.*pay.*only\b",
+    r"\bmedicaid.*only\b",
+    r"\binsurance.*only\b",
+
+    # Case variations and common phrases
+    r"not adding referral",
+    r"not accepting referral",
+    r"no referral agents",
+    r"referral agents not",
+    r"agents not accepted",
+    r"not working with agencies",
+    r"agencies not welcome",
+
+    # Additional referral-related patterns
+    r"do not work with referral",
+    r"does not pay referral",
+    r"no referral fee",
+    r"not pay referral",
+    r"referral fee",
+    r"referral companies",
+    r"referral agents",
+    r"work with referral",
+    r"pay referral",
 ]
 
