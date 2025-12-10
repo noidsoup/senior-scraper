@@ -27,6 +27,17 @@ import requests
 from collections import defaultdict
 import re
 
+# Import core module
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from core import (
+    map_care_types_to_canonical,
+    SUPPORTED_STATES,
+    SeniorScraperError,
+    AuthenticationError,
+    RateLimitError,
+)
+
 # Import existing scrapers
 import sys
 sys.path.append(str(Path(__file__).parent / "scrapers_active"))
@@ -104,7 +115,7 @@ class MonthlyUpdateOrchestrator:
         print(f"[{timestamp}] {prefix} {message}")
 
     def _normalize_care_types(self, care_types):
-        """Normalize care types for comparison"""
+        """Normalize care types for comparison using core module"""
         if not care_types:
             return []
 
@@ -112,32 +123,8 @@ class MonthlyUpdateOrchestrator:
         if isinstance(care_types, str):
             care_types = [ct.strip() for ct in care_types.split(',') if ct.strip()]
 
-        # Apply canonical mapping (same as import)
-        TYPE_MAPPING = {
-            'assisted living facility': 'Assisted Living Community',
-            'assisted living home': 'Assisted Living Home',
-            'independent living': 'Independent Living',
-            'memory care': 'Memory Care',
-            'skilled nursing': 'Nursing Home',
-            'continuing care retirement community': 'Assisted Living Community',
-            'in-home care': 'Home Care',
-            'home health': 'Home Care',
-            'hospice': 'Home Care',
-            'respite care': 'Assisted Living Community',
-            'directed care': 'Assisted Living Home',
-            'personal care': 'Assisted Living Home',
-            'supervisory care': 'Assisted Living Home',
-        }
-
-        normalized = []
-        for ct in care_types:
-            ct_lower = ct.lower().strip()
-            if ct_lower in TYPE_MAPPING:
-                mapped = TYPE_MAPPING[ct_lower]
-                if mapped not in normalized:
-                    normalized.append(mapped)
-
-        return sorted(normalized)
+        # Use core module for mapping
+        return map_care_types_to_canonical(care_types)
 
     def _normalize_address_components(
         self,
@@ -877,62 +864,11 @@ class MonthlyUpdateOrchestrator:
         output_dir.mkdir(parents=True, exist_ok=True)
         
         # Map care types to canonical WordPress taxonomy
-        # CANONICAL MAPPING - only these are valid care types for WordPress
+        # Use core module for care type mapping
         def map_care_types(care_types_list):
-            TYPE_MAPPING = {
-                # Senior Place type -> WordPress canonical type
-                'assisted living facility': 'Assisted Living Community',
-                'assisted living home': 'Assisted Living Home',
-                'independent living': 'Independent Living',
-                'memory care': 'Memory Care',
-                'skilled nursing': 'Nursing Home',
-                'continuing care retirement community': 'Assisted Living Community',
-                'in-home care': 'Home Care',
-                'home health': 'Home Care',
-                'hospice': 'Home Care',
-                'respite care': 'Assisted Living Community',
-                'directed care': 'Assisted Living Home',  # Arizona-specific
-                'personal care': 'Assisted Living Home',  # Care service type
-                'supervisory care': 'Assisted Living Home',  # Care service type
-            }
-            NOISE_PATTERNS = [
-                'private pay',
-                'medicaid',
-                'contract',
-                'cane',
-                'walker',
-                'wheelchair',
-                'some memory loss',
-                'private'
-            ]
-            # Only include types that map to valid canonical care types
-            # This filters out room types (Studio, One Bedroom, etc.) and bathroom types (Shared, Private)
-            canonical = []
-            for ct in care_types_list or []:
-                ct_lower = ct.lower().strip()
-                if not ct_lower:
-                    continue
-                if any(noise in ct_lower for noise in NOISE_PATTERNS):
-                    continue
-
-                mapped = TYPE_MAPPING.get(ct_lower)
-
-                # Fallback substring matching for partial labels like "independent"
-                if not mapped:
-                    if 'assisted living' in ct_lower:
-                        mapped = 'Assisted Living Community'
-                    elif 'independent' in ct_lower:
-                        mapped = 'Independent Living'
-                    elif 'memory care' in ct_lower:
-                        mapped = 'Memory Care'
-                    elif 'nursing' in ct_lower:
-                        mapped = 'Nursing Home'
-                    elif 'home care' in ct_lower or 'home health' in ct_lower or 'in-home care' in ct_lower:
-                        mapped = 'Home Care'
-
-                if mapped and mapped not in canonical:
-                    canonical.append(mapped)
-            return ', '.join(canonical)
+            """Map care types using core module, return comma-separated string for CSV"""
+            canonical_list = map_care_types_to_canonical(care_types_list)
+            return ', '.join(canonical_list)
         
         # NEW LISTINGS CSV
         if new_listings:

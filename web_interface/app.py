@@ -48,65 +48,8 @@ running_processes = {}
 # File to persist process state across reloads
 PROCESS_STATE_FILE = Path(__file__).parent / 'logs' / 'process_state.json'
 
-# CANONICAL CARE TYPE MAPPING - must match orchestrator exactly
-CARE_TYPE_MAPPING = {
-    # Senior Place type (lowercase) -> WordPress canonical type
-    'assisted living facility': 'Assisted Living Community',
-    'assisted living home': 'Assisted Living Home',
-    'independent living': 'Independent Living',
-    'memory care': 'Memory Care',
-    'skilled nursing': 'Nursing Home',
-    'continuing care retirement community': 'Assisted Living Community',
-    'in-home care': 'Home Care',
-    'home health': 'Home Care',
-    'hospice': 'Home Care',
-    'respite care': 'Assisted Living Community',
-    'directed care': 'Assisted Living Home',  # Arizona-specific
-    'personal care': 'Assisted Living Home',  # Care service type
-    'supervisory care': 'Assisted Living Home',  # Care service type
-}
-
-def map_care_types_to_canonical(care_types_list):
-    """
-    Map raw Senior Place care types to WordPress canonical types.
-    Filters out non-care-types (room types, bathroom types, etc.)
-    """
-    NOISE_PATTERNS = [
-        'private pay',
-        'medicaid',
-        'contract',
-        'cane',
-        'walker',
-        'wheelchair',
-        'some memory loss',
-        'private'
-    ]
-    canonical = []
-    for ct in care_types_list or []:
-        ct_lower = ct.lower().strip()
-        if not ct_lower:
-            continue
-        if any(noise in ct_lower for noise in NOISE_PATTERNS):
-            continue
-
-        mapped = CARE_TYPE_MAPPING.get(ct_lower)
-
-        # Fallback substring matching for partial labels like "independent"
-        if not mapped:
-            if 'assisted living' in ct_lower:
-                mapped = 'Assisted Living Community'
-            elif 'independent' in ct_lower:
-                mapped = 'Independent Living'
-            elif 'memory care' in ct_lower:
-                mapped = 'Memory Care'
-            elif 'nursing' in ct_lower:
-                mapped = 'Nursing Home'
-            elif 'home care' in ct_lower or 'home health' in ct_lower or 'in-home care' in ct_lower:
-                mapped = 'Home Care'
-
-        if mapped and mapped not in canonical:
-            canonical.append(mapped)
-    return canonical
+# Import from core module
+from core import map_care_types_to_canonical
 
 def save_process_state():
     """Save running process info to disk for reload recovery"""

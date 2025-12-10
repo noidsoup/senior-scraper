@@ -1,0 +1,71 @@
+"""
+Shared constants for Senior Scraper
+"""
+
+# Canonical care types (WordPress taxonomy)
+CANONICAL_CARE_TYPES = [
+    'Assisted Living Community',
+    'Assisted Living Home',
+    'Independent Living',
+    'Memory Care',
+    'Nursing Home',
+    'Home Care',
+]
+
+# Mapping from Senior Place care types (lowercase) to WordPress canonical types
+CARE_TYPE_MAPPING = {
+    'assisted living facility': 'Assisted Living Community',
+    'assisted living home': 'Assisted Living Home',
+    'independent living': 'Independent Living',
+    'memory care': 'Memory Care',
+    'skilled nursing': 'Nursing Home',
+    'continuing care retirement community': 'Assisted Living Community',
+    'ccrc': 'Assisted Living Community',
+    'in-home care': 'Home Care',
+    'home health': 'Home Care',
+    'hospice': 'Home Care',
+    'respite care': 'Assisted Living Community',
+    'directed care': 'Assisted Living Home',  # Arizona-specific
+    'personal care': 'Assisted Living Home',
+    'supervisory care': 'Assisted Living Home',
+}
+
+# Patterns to filter out (not care types)
+NOISE_PATTERNS = [
+    'private pay',
+    'medicaid',
+    'contract',
+    'cane',
+    'walker',
+    'wheelchair',
+    'some memory loss',
+    'private',
+    'shared',
+    'studio',
+    'one bedroom',
+    'two bedroom',
+    'bathroom',
+]
+
+# Supported states for scraping
+SUPPORTED_STATES = ['AZ', 'CA', 'CO', 'ID', 'NM', 'UT']
+
+# State abbreviation to full name mapping
+STATE_NAMES = {
+    'AZ': 'Arizona',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'ID': 'Idaho',
+    'NM': 'New Mexico',
+    'UT': 'Utah',
+}
+
+# Blocklist patterns for titles that should never be imported
+BLOCKLIST_PATTERNS = [
+    r"\bdo\s+not\s+refer\b",
+    r"\bdo\s+not\s+use\b",
+    r"\bnot\s+signing\b",
+    r"\bsurgery\b",
+    r"\bsurgical\b",
+]
+
