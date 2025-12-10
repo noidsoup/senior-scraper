@@ -6,6 +6,63 @@ import pytest
 from monthly_scrapers.monthly_update_orchestrator import MonthlyUpdateOrchestrator
 
 
+def test_normalize_care_types_maps_canonical():
+    """Test that care type normalization maps to canonical WordPress types"""
+    orch = MonthlyUpdateOrchestrator("", "", "", "", "")
+
+    # Test single type mapping
+    result = orch._normalize_care_types(["Assisted Living Facility"])
+    assert result == ["Assisted Living Community"]
+
+    # Test multiple types
+    result = orch._normalize_care_types(["Assisted Living Home", "Memory Care"])
+    assert result == ["Assisted Living Home", "Memory Care"]
+
+    # Test filtering of non-care types
+    result = orch._normalize_care_types(["Assisted Living Home", "Private", "Shared"])
+    assert result == ["Assisted Living Home"]
+
+    # Test empty input
+    result = orch._normalize_care_types([])
+    assert result == []
+
+
+def test_address_components_parsing_handles_malformed_data():
+    """Test that address parsing handles malformed Senior Place data"""
+    orch = MonthlyUpdateOrchestrator("", "", "", "", "")
+
+    # Test malformed data where city contains state/zip + junk
+    street, city, state, zip_code, full = orch._normalize_address_components(
+        "113 NORTH AVENIDA DE SAN RAMON\nTucson",
+        "AZ 85710\nDirections",
+        "",
+        ""
+    )
+
+    assert street == "113 NORTH AVENIDA DE SAN RAMON"
+    assert city == "Tucson"
+    assert state == "AZ"
+    assert zip_code == "85710"
+
+
+def test_address_components_parsing_clean_addresses():
+    """Test that address parsing produces clean, properly formatted addresses"""
+    orch = MonthlyUpdateOrchestrator("", "", "", "", "")
+
+    street, city, state, zip_code, full = orch._normalize_address_components(
+        "123 Main St\nAnytown",
+        "CA 90210",
+        "",
+        ""
+    )
+
+    assert street == "123 Main St"
+    assert city == "Anytown"  # City extracted from address field
+    assert state == "CA"      # State extracted from city field
+    assert zip_code == "90210"
+    assert full == "123 Main St, Anytown, CA 90210"
+
+
 @pytest.fixture
 def orch():
     return MonthlyUpdateOrchestrator(

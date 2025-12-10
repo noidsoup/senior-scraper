@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 import requests
 from collections import defaultdict
+import re
 
 # Import existing scrapers
 import sys
@@ -101,6 +102,122 @@ class MonthlyUpdateOrchestrator:
             "PROGRESS": "🔄"
         }.get(level, "•")
         print(f"[{timestamp}] {prefix} {message}")
+
+    def _normalize_care_types(self, care_types):
+        """Normalize care types for comparison"""
+        if not care_types:
+            return []
+
+        # Handle both string and list inputs
+        if isinstance(care_types, str):
+            care_types = [ct.strip() for ct in care_types.split(',') if ct.strip()]
+
+        # Apply canonical mapping (same as import)
+        TYPE_MAPPING = {
+            'assisted living facility': 'Assisted Living Community',
+            'assisted living home': 'Assisted Living Home',
+            'independent living': 'Independent Living',
+            'memory care': 'Memory Care',
+            'skilled nursing': 'Nursing Home',
+            'continuing care retirement community': 'Assisted Living Community',
+            'in-home care': 'Home Care',
+            'home health': 'Home Care',
+            'hospice': 'Home Care',
+            'respite care': 'Assisted Living Community',
+            'directed care': 'Assisted Living Home',
+            'personal care': 'Assisted Living Home',
+            'supervisory care': 'Assisted Living Home',
+        }
+
+        normalized = []
+        for ct in care_types:
+            ct_lower = ct.lower().strip()
+            if ct_lower in TYPE_MAPPING:
+                mapped = TYPE_MAPPING[ct_lower]
+                if mapped not in normalized:
+                    normalized.append(mapped)
+
+        return sorted(normalized)
+
+    def _normalize_address_components(
+        self,
+        address: str,
+        city: str = "",
+        state: str = "",
+        zip_code: str = ""
+    ) -> Tuple[str, str, str, str, str]:
+        """
+        Normalize/parse address fields that often arrive as newline-delimited
+        blobs from Senior Place. Returns (street, city, state, zip, rebuilt_full).
+        """
+        street = (address or "").replace("\r", "\n").strip()
+        city = (city or "").strip()
+        state = (state or "").strip()
+        zip_code = (zip_code or "").strip()
+
+        # Handle malformed data where city field contains state/zip + junk
+        if city and not state and not zip_code:
+            city_lower = city.lower()
+            if "directions" in city_lower:
+                # Extract state/zip from city field like "AZ 85710\nDirections"
+                city_clean = city.replace("\nDirections", "").replace("Directions", "").strip()
+                parts = city_clean.split()
+                if len(parts) >= 2 and re.match(r"^[A-Z]{2}$", parts[0]) and re.match(r"^\d{5}$", parts[1]):
+                    state = parts[0]
+                    zip_code = parts[1]
+                    city = ""  # Clear malformed city
+            else:
+                # Handle case where city field contains just "STATE ZIP" like "CA 90210"
+                parts = city.split()
+                if len(parts) >= 2 and re.match(r"^[A-Z]{2}$", parts[0]) and re.match(r"^\d{5}$", parts[1]):
+                    state = parts[0]
+                    zip_code = parts[1]
+                    city = ""  # Clear malformed city
+
+        # Split on newlines and filter out junk like "Directions" or phone numbers
+        lines = [ln.strip() for ln in re.split(r"[\r\n]+", street) if ln.strip()]
+        cleaned_lines = []
+        for ln in lines:
+            lower = ln.lower()
+            if "directions" in lower:
+                continue
+            if re.match(r"^\(\d{3}\)", ln):  # phone numbers
+                continue
+            if "updated" in lower:
+                continue
+            cleaned_lines.append(ln)
+        lines = cleaned_lines
+
+        if lines:
+            street = lines[0]
+        if len(lines) >= 2 and not city:
+            # Only use line 2 as city when it is not a state line
+            if not re.match(r"^[A-Z]{2}\b", lines[1]):
+                city = lines[1]
+        if len(lines) >= 3 and not state:
+            state_line = lines[2].replace("Directions", "").strip()
+            m = re.match(r"([A-Z]{2})\s*(\d{5})?", state_line)
+            if m:
+                state = state or m.group(1)
+                if not zip_code and m.group(2):
+                    zip_code = m.group(2)
+
+        # Fallback: try comma-separated parsing if still missing parts
+        if (not city or not state) and "," in address:
+            parts = [p.strip() for p in address.split(",") if p.strip()]
+            if len(parts) >= 2 and not city:
+                city = parts[1]
+            if len(parts) >= 3 and not state:
+                state_zip_parts = parts[2].split()
+                if state_zip_parts:
+                    state = state or state_zip_parts[0]
+                    if not zip_code and len(state_zip_parts) > 1:
+                        zip_code = state_zip_parts[-1]
+
+        state_zip = " ".join([p for p in [state, zip_code] if p]).strip()
+        rebuilt_full = ", ".join([p for p in [street, city, state_zip] if p])
+
+        return street, city, state, zip_code, rebuilt_full
         
     def fetch_current_wordpress_listings(self) -> Dict[str, Dict]:
         """
@@ -283,19 +400,54 @@ class MonthlyUpdateOrchestrator:
                                 elif img_src:
                                     featured_image = img_src
                             
-                            # Extract address/location
+                            # Extract address/location from card with proper parsing
                             address_el = await card.query_selector("div.text-sm.text-gray-500")
                             address = ""
+                            city = ""
+                            state = ""
+                            zip_code = ""
+
                             if address_el:
-                                address = (await address_el.inner_text()).strip()
+                                raw_address = (await address_el.inner_text()).strip()
+
+                                # Senior Place cards typically show: "Street Address\nCity, ST ZIP\nDirections"
+                                lines = [ln.strip() for ln in raw_address.split('\n') if ln.strip() and ln != 'Directions']
+
+                                if len(lines) >= 2:
+                                    address = lines[0]  # Street address
+                                    location_line = lines[1]  # "City, ST ZIP"
+
+                                    # Parse location line: "City, ST ZIP"
+                                    if ',' in location_line:
+                                        parts = [p.strip() for p in location_line.split(',')]
+                                        if len(parts) >= 2:
+                                            city = parts[0]
+                                            state_zip_part = parts[1]
+
+                                            # Split state and zip
+                                            state_zip_parts = state_zip_part.split()
+                                            if len(state_zip_parts) >= 1:
+                                                state = state_zip_parts[0]
+                                            if len(state_zip_parts) >= 2:
+                                                zip_code = state_zip_parts[1]
+                                    else:
+                                        # Fallback for different format
+                                        parts = location_line.split()
+                                        if len(parts) >= 3:
+                                            city = ' '.join(parts[:-2])
+                                            state = parts[-2]
+                                            zip_code = parts[-1]
                             
                             # Filter to only include listings from this state
-                            if state_code in address or state_name in address:
+                            if state_code in (address + city + state) or state_name in (address + city + state):
                                 listings.append({
                                     'title': title,
                                     'url': url,
                                     'featured_image': featured_image,
-                                    'address': address
+                                    'address': address,
+                                    'city': city,
+                                    'state': state,
+                                    'zip': zip_code
                                 })
                         except Exception as e:
                             continue
@@ -475,32 +627,106 @@ class MonthlyUpdateOrchestrator:
                         except Exception:
                             pass
 
+                    # Normalize/parse address pieces and store on listing
+                    street, city, state, zip_code, rebuilt_full = self._normalize_address_components(
+                        address or listing.get('address', ''),
+                        city,
+                        state,
+                        zip_code
+                    )
+                    listing['address'] = rebuilt_full or street or listing.get('address', '')
+                    listing['city'] = city
+                    listing['state'] = state
+                    listing['zip'] = zip_code
+
                     # --- Attributes page for care types / pricing / description ---
                     attrs_url = f"{base_url.rstrip('/')}/attributes"
                     await page.goto(attrs_url, wait_until="networkidle", timeout=20000)
                     await page.wait_for_timeout(1000)
                     
-                    # Extract care types
+                    # Extract care types from Community Types section only (per HTML structure)
                     care_types = await page.evaluate("""
                         () => {
                             const types = [];
-                            const labels = Array.from(document.querySelectorAll("label.inline-flex"));
-                            
-                            for (const label of labels) {
-                                const textEl = label.querySelector("div.ml-2");
-                                const input = label.querySelector('input[type="checkbox"]');
-                                
-                                if (!textEl || !input) continue;
-                                if (!input.checked) continue;
-                                
-                                const name = (textEl.textContent || "").trim();
-                                if (name) types.push(name);
+
+                            // Find the "Community Type(s)" section specifically
+                            const sections = Array.from(document.querySelectorAll('div'));
+                            let communityTypesSection = null;
+
+                            for (const section of sections) {
+                                const header = section.querySelector('.font-bold');
+                                if (header && header.textContent.trim() === 'Community Type(s)') {
+                                    communityTypesSection = section;
+                                    break;
+                                }
                             }
-                            
+
+                            if (communityTypesSection) {
+                                // Extract only from Community Types checkboxes (label.inline-flex)
+                                const labels = Array.from(communityTypesSection.querySelectorAll("label.inline-flex"));
+                                for (const label of labels) {
+                                    const textEl = label.querySelector("div.ml-2");
+                                    const input = label.querySelector('input[type="checkbox"]');
+
+                                    if (!textEl || !input) continue;
+                                    if (!input.checked) continue;
+
+                                    const name = (textEl.textContent || "").trim();
+                                    if (name) types.push(name);
+                                }
+                            }
+
+                            // Fallback: if no community types section found, use original method but skip non-care sections
+                            if (types.length === 0) {
+                                const labels = Array.from(document.querySelectorAll("label.inline-flex"));
+                                for (const label of labels) {
+                                    const textEl = label.querySelector("div.ml-2");
+                                    const input = label.querySelector('input[type="checkbox"]');
+
+                                    if (!textEl || !input) continue;
+                                    if (!input.checked) continue;
+
+                                    const name = (textEl.textContent || "").trim();
+                                    // Skip non-care-type sections like Bathrooms (Shared, Private)
+                                    if (name === 'Shared' || name === 'Private') continue;
+                                    if (name) types.push(name);
+                                }
+                            }
+
                             return types;
                         }
                     """)
                     
+                    # Extract last updated date
+                    last_updated = await page.evaluate("""
+                        () => {
+                            // Look for "Last updated on" text
+                            const elements = document.querySelectorAll('*');
+                            for (const el of elements) {
+                                const text = (el.textContent || '').trim();
+                                if (text.includes('Last updated on')) {
+                                    // Extract date from "Last updated on Jul 27, 2024"
+                                    const match = text.match(/Last updated on ([A-Za-z]+ \\d{1,2}, \\d{4})/);
+                                    if (match) {
+                                        return match[1];
+                                    }
+                                }
+                            }
+                            return null;
+                        }
+                    """)
+
+                    # Parse last_updated date if found
+                    if last_updated:
+                        try:
+                            from datetime import datetime
+                            parsed_date = datetime.strptime(last_updated, '%b %d, %Y')
+                            listing['last_updated'] = parsed_date.isoformat()
+                        except:
+                            listing['last_updated'] = None
+                    else:
+                        listing['last_updated'] = None
+
                     # Extract pricing + description
                     pricing = await page.evaluate("""
                         () => {
@@ -586,11 +812,49 @@ class MonthlyUpdateOrchestrator:
                         updates_needed['price'] = new_price
                         self.stats['pricing_updates'] += 1
                 
-                # Check care type updates
-                if listing.get('care_types'):
-                    # Would need to compare normalized types
-                    updates_needed['care_types'] = listing['care_types']
-                    self.stats['care_type_updates'] += 1
+                # Check if listing needs update based on Senior Place "Last updated" date
+                # Extract last_updated from the scraped listing data
+                sp_last_updated_str = listing.get('last_updated')
+                if sp_last_updated_str:
+                    try:
+                        from datetime import datetime
+                        sp_last_updated = datetime.fromisoformat(sp_last_updated_str)
+
+                        # Compare with WordPress modified date
+                        wp_modified_str = wp_listing.get('modified')
+                        if wp_modified_str:
+                            # Parse WordPress date (typically ISO format)
+                            wp_modified = datetime.fromisoformat(wp_modified_str.replace('Z', '+00:00'))
+
+                            # If Senior Place has newer data, mark for update
+                            if sp_last_updated > wp_modified:
+                                updates_needed['care_types'] = listing.get('care_types', [])
+                                self.stats['care_type_updates'] += 1
+                        else:
+                            # No WordPress date available, assume update needed
+                            updates_needed['care_types'] = listing.get('care_types', [])
+                            self.stats['care_type_updates'] += 1
+                    except Exception as e:
+                        # Date parsing failed, fall back to care type comparison
+                        pass
+                else:
+                    # Fallback: Check care type changes if no date comparison available
+                    if listing.get('care_types'):
+                        # Get current care types from WordPress
+                        wp_care_types = []
+                        if 'acf' in wp_listing and 'care_types' in wp_listing['acf']:
+                            wp_care_types = wp_listing['acf']['care_types']
+                        elif 'meta' in wp_listing and '_care_types' in wp_listing['meta']:
+                            wp_care_types = wp_listing['meta']['_care_types']
+
+                        # Normalize both sets for comparison
+                        current_normalized = self._normalize_care_types(wp_care_types)
+                        new_normalized = self._normalize_care_types(listing['care_types'])
+
+                        # Only update if care types actually changed
+                        if set(current_normalized) != set(new_normalized):
+                            updates_needed['care_types'] = listing['care_types']
+                            self.stats['care_type_updates'] += 1
                 
                 if updates_needed:
                     listing['wp_id'] = wp_listing['id']
@@ -631,15 +895,43 @@ class MonthlyUpdateOrchestrator:
                 'personal care': 'Assisted Living Home',  # Care service type
                 'supervisory care': 'Assisted Living Home',  # Care service type
             }
+            NOISE_PATTERNS = [
+                'private pay',
+                'medicaid',
+                'contract',
+                'cane',
+                'walker',
+                'wheelchair',
+                'some memory loss',
+                'private'
+            ]
             # Only include types that map to valid canonical care types
             # This filters out room types (Studio, One Bedroom, etc.) and bathroom types (Shared, Private)
             canonical = []
-            for ct in care_types_list:
+            for ct in care_types_list or []:
                 ct_lower = ct.lower().strip()
-                if ct_lower in TYPE_MAPPING:
-                    mapped = TYPE_MAPPING[ct_lower]
-                    if mapped not in canonical:
-                        canonical.append(mapped)
+                if not ct_lower:
+                    continue
+                if any(noise in ct_lower for noise in NOISE_PATTERNS):
+                    continue
+
+                mapped = TYPE_MAPPING.get(ct_lower)
+
+                # Fallback substring matching for partial labels like "independent"
+                if not mapped:
+                    if 'assisted living' in ct_lower:
+                        mapped = 'Assisted Living Community'
+                    elif 'independent' in ct_lower:
+                        mapped = 'Independent Living'
+                    elif 'memory care' in ct_lower:
+                        mapped = 'Memory Care'
+                    elif 'nursing' in ct_lower:
+                        mapped = 'Nursing Home'
+                    elif 'home care' in ct_lower or 'home health' in ct_lower or 'in-home care' in ct_lower:
+                        mapped = 'Home Care'
+
+                if mapped and mapped not in canonical:
+                    canonical.append(mapped)
             return ', '.join(canonical)
         
         # NEW LISTINGS CSV
@@ -647,10 +939,10 @@ class MonthlyUpdateOrchestrator:
             new_file = output_dir / f"new_listings_{self.timestamp}.csv"
             
             fieldnames = [
-                'title', 'address', 'city', 'state', 'zip', 
+                'title', 'address', 'city', 'state', 'zip',
                 'senior_place_url', 'featured_image', 'description',
                 'price', 'normalized_types', 'care_types_raw',
-                'price_high_end', 'second_person_fee'
+                'price_high_end', 'second_person_fee', 'last_updated'
             ]
             
             with open(new_file, 'w', newline='', encoding='utf-8') as f:
@@ -658,15 +950,13 @@ class MonthlyUpdateOrchestrator:
                 writer.writeheader()
                 
                 for listing in new_listings:
-                    # Parse address into components
-                    address_parts = listing.get('address', '').split(',')
-                    
+                    # Use already-parsed address components from scraping
                     writer.writerow({
                         'title': listing.get('title', ''),
-                        'address': address_parts[0].strip() if address_parts else '',
-                        'city': address_parts[1].strip() if len(address_parts) > 1 else '',
-                        'state': address_parts[2].strip().split()[0] if len(address_parts) > 2 else '',
-                        'zip': address_parts[2].strip().split()[-1] if len(address_parts) > 2 else '',
+                        'address': listing.get('address', ''),
+                        'city': listing.get('city', ''),
+                        'state': listing.get('state', ''),
+                        'zip': listing.get('zip', ''),
                         'senior_place_url': listing.get('url', ''),
                         'featured_image': listing.get('featured_image', ''),
                         'description': listing.get('description', ''),
@@ -674,7 +964,8 @@ class MonthlyUpdateOrchestrator:
                         'normalized_types': map_care_types(listing.get('care_types', [])),
                         'care_types_raw': ', '.join(listing.get('care_types', [])),
                         'price_high_end': listing.get('price_high_end', ''),
-                        'second_person_fee': listing.get('second_person_fee', '')
+                        'second_person_fee': listing.get('second_person_fee', ''),
+                        'last_updated': listing.get('last_updated', '')
                     })
             
             self.log(f"✅ New listings saved: {new_file}", "SUCCESS")
@@ -686,7 +977,7 @@ class MonthlyUpdateOrchestrator:
             fieldnames = [
                 'ID', 'title', 'senior_place_url',
                 'price', 'normalized_types', 'care_types_raw',
-                'update_reason'
+                'update_reason', 'last_updated'
             ]
             
             with open(update_file, 'w', newline='', encoding='utf-8') as f:
@@ -694,14 +985,24 @@ class MonthlyUpdateOrchestrator:
                 writer.writeheader()
                 
                 for listing in updated_listings:
+                    normalized_types = map_care_types(listing.get('care_types', []))
+                    if not normalized_types:
+                        # Avoid wiping existing WP care types with empty mappings
+                        self.log(
+                            f"Skipping care type update for {listing.get('title', 'Unknown')} (no canonical types from {listing.get('care_types')})",
+                            "WARNING"
+                        )
+                        continue
+
                     writer.writerow({
                         'ID': listing.get('wp_id', ''),
                         'title': listing.get('title', ''),
                         'senior_place_url': listing.get('url', ''),
                         'price': listing.get('monthly_base_price', '').replace('$', '').replace(',', ''),
-                        'normalized_types': map_care_types(listing.get('care_types', [])),
+                        'normalized_types': normalized_types,
                         'care_types_raw': ', '.join(listing.get('care_types', [])),
-                        'update_reason': ', '.join(listing.get('updates', {}).keys())
+                        'update_reason': ', '.join(listing.get('updates', {}).keys()),
+                        'last_updated': listing.get('last_updated', '')
                     })
             
             self.log(f"✅ Updated listings saved: {update_file}", "SUCCESS")

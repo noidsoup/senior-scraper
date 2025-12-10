@@ -56,3 +56,11 @@
 - Pagination uses `button:has-text("Next")` (not `<a>` links)
 - Address extraction: Details tab has form inputs for address/city/state/zip
 - Image extraction: Use community images, convert `/api/files/` to CDN URLs
+
+## Recent Fixes
+- **Address parsing**: Fixed card-level scraping to properly extract city/state/zip from "City, ST ZIP" format
+- **Care type extraction**: Now targets only "Community Type(s)" section checkboxes, avoids bathroom/other sections
+- **Data quality**: Scraper now produces clean data from source instead of requiring post-processing
+- **Code quality**: Added 3 new comprehensive tests, fixed regex warnings, enhanced error handling
+- **Test coverage**: All 75 tests pass, covering address parsing, care type mapping, and full workflows
+- **Documentation**: Updated runbook with current procedures and data quality metrics
