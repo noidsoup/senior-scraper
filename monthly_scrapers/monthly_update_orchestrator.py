@@ -986,13 +986,22 @@ class MonthlyUpdateOrchestrator:
                 
                 for listing in updated_listings:
                     normalized_types = map_care_types(listing.get('care_types', []))
+                    update_reasons = list(listing.get('updates', {}).keys())
+                    
                     if not normalized_types:
-                        # Avoid wiping existing WP care types with empty mappings
+                        # Care types didn't map - remove care_types from update reasons
+                        # but still write the listing for other updates (e.g., price)
                         self.log(
-                            f"Skipping care type update for {listing.get('title', 'Unknown')} (no canonical types from {listing.get('care_types')})",
+                            f"No canonical care types for {listing.get('title', 'Unknown')} (raw: {listing.get('care_types')})",
                             "WARNING"
                         )
-                        continue
+                        if 'care_types' in update_reasons:
+                            update_reasons.remove('care_types')
+                        
+                        # Skip only if there are no other updates
+                        if not update_reasons:
+                            self.log(f"Skipping {listing.get('title', 'Unknown')} - no valid updates remain", "DEBUG")
+                            continue
 
                     writer.writerow({
                         'ID': listing.get('wp_id', ''),
@@ -1001,7 +1010,7 @@ class MonthlyUpdateOrchestrator:
                         'price': listing.get('monthly_base_price', '').replace('$', '').replace(',', ''),
                         'normalized_types': normalized_types,
                         'care_types_raw': ', '.join(listing.get('care_types', [])),
-                        'update_reason': ', '.join(listing.get('updates', {}).keys()),
+                        'update_reason': ', '.join(update_reasons),
                         'last_updated': listing.get('last_updated', '')
                     })
             

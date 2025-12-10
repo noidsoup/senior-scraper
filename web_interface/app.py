@@ -477,7 +477,7 @@ def api_fetch_single_listing():
                             const candidates = document.querySelectorAll('[class*="address"], [class*="location"], .address, .location');
                             for (const el of candidates) {
                                 const text = el.textContent.trim();
-                                if (text && (/\d+/.test(text) || text.includes(','))) {
+                                if (text && (/\\d+/.test(text) || text.includes(','))) {
                                     const lines = text.split('\\n').filter(l => l.trim());
                                     if (lines.length >= 2) {
                                         return { address: lines[0].trim(), location: lines[1].trim() };
