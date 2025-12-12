@@ -17,6 +17,9 @@ ENV/
 !*.example.env
 wp_config.env
 memory.local.md
+.env.bak
+tmp_check_dupes.py
+tmp_check_dupes.out
 
 # ========================================
 # IDE & OS

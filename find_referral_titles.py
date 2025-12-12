@@ -9,8 +9,8 @@ from requests.auth import HTTPBasicAuth
 
 # Load WordPress credentials
 WP_URL = os.getenv("WP_URL", "https://aplaceforseniorscms.kinsta.cloud")
-WP_USER = os.getenv("WP_USER", "nicholas_editor")
-WP_PASS = os.getenv("WP_PASS", "3oiO dmah Ao7w Y8M7 5RKF rVrk")
+WP_USER = os.getenv("WP_USER") or os.getenv("WP_USERNAME") or "nicholas_editor"
+WP_PASS = os.getenv("WP_PASS") or os.getenv("WP_PASSWORD")
 
 def find_referral_listings():
     """Find all published listings with 'referral' in title"""

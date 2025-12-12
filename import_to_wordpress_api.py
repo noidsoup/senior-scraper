@@ -150,6 +150,23 @@ def clean_title(title):
     return cleaned.strip()
 
 
+def normalize_match_title(title: str) -> str:
+    """Normalize titles for duplicate matching (case/whitespace-insensitive)."""
+    cleaned = clean_title(title) or ""
+    cleaned = re.sub(r"\s+", " ", cleaned).strip().lower()
+    return cleaned
+
+
+def normalize_match_address(address: str) -> str:
+    """Normalize addresses for duplicate matching (case/punctuation-insensitive)."""
+    if not address:
+        return ""
+    cleaned = address.lower()
+    cleaned = re.sub(r"[^0-9a-z]+", " ", cleaned)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned
+
+
 def upload_image_to_wordpress(image_url, title):
     """Download image from URL and upload to WordPress media library"""
     if not image_url or image_url.strip() == '':
@@ -217,6 +234,87 @@ def upload_image_to_wordpress(image_url, title):
         return None
 
 
+def get_existing_listing_index():
+    """
+    Fetch existing listings from WordPress for duplicate detection.
+
+    Returns:
+      - wp_urls: set of existing `acf.senior_place_url` values
+      - title_address_index: dict[(normalized_title, normalized_address)] -> best existing post info
+        (prefers published over draft when duplicates already exist)
+    """
+    print("Fetching existing listings from WordPress (duplicate detection index)...")
+
+    wp_urls = set()
+    title_address_index = {}
+    page = 1
+
+    while True:
+        response = requests.get(
+            f"{WP_URL}/wp-json/wp/v2/listing",
+            params={
+                "status": "any",
+                "per_page": 100,
+                "page": page,
+                "_fields": "id,title,status,acf",
+            },
+            auth=HTTPBasicAuth(WP_USER, WP_PASS),
+            timeout=30,
+        )
+
+        if response.status_code != 200:
+            break
+
+        listings = response.json()
+        if not listings:
+            break
+
+        for listing in listings:
+            acf = listing.get("acf") or {}
+            sp_url = (acf.get("senior_place_url") or "").strip()
+            if sp_url:
+                wp_urls.add(sp_url)
+
+            # Title + address index (for legacy Seniorly listings that lack senior_place_url)
+            title_obj = listing.get("title")
+            title_raw = title_obj.get("rendered", "") if isinstance(title_obj, dict) else (title_obj or "")
+            addr_raw = (acf.get("address") or "").strip()
+
+            nt = normalize_match_title(title_raw)
+            na = normalize_match_address(addr_raw)
+            if not nt or not na:
+                continue
+
+            key = (nt, na)
+            cand = {
+                "id": listing.get("id"),
+                "status": listing.get("status"),
+                "senior_place_url": sp_url,
+            }
+
+            existing = title_address_index.get(key)
+            if (
+                existing is None
+                or (existing.get("status") != "publish" and cand.get("status") == "publish")
+            ):
+                title_address_index[key] = cand
+
+        print(
+            f"   Fetched page {page}: {len(listings)} listings "
+            f"(SP URLs: {len(wp_urls)}, title+address keys: {len(title_address_index)})"
+        )
+
+        total_pages = int(response.headers.get("X-WP-TotalPages", 1))
+        if page >= total_pages:
+            break
+        page += 1
+
+    print(
+        f"Indexed {len(wp_urls)} Senior Place URLs and {len(title_address_index)} title+address keys\n"
+    )
+    return wp_urls, title_address_index
+
+
 def get_existing_urls():
     """Fetch all existing Senior Place URLs from WordPress"""
     print("Fetching existing listings from WordPress...")
@@ -251,7 +349,7 @@ def get_existing_urls():
     return wp_urls
 
 
-def create_listing(listing, wp_urls, test_mode=False):
+def create_listing(listing, wp_urls, title_address_index, test_mode=False):
     """Create a WordPress listing via REST API"""
     
     title = clean_title(listing['title'])
@@ -267,6 +365,33 @@ def create_listing(listing, wp_urls, test_mode=False):
     # Check if already exists
     if url in wp_urls:
         return {'status': 'skipped', 'reason': 'already_exists'}
+
+    # ALSO check duplicates by (title + address) for legacy Seniorly listings that lack senior_place_url
+    match_key = (normalize_match_title(title), normalize_match_address(address))
+    existing = title_address_index.get(match_key)
+    if existing and existing.get("id"):
+        existing_id = existing["id"]
+        existing_sp = (existing.get("senior_place_url") or "").strip()
+
+        # Backfill Senior Place URL into the existing listing if missing (helps future update comparisons)
+        if url and not existing_sp and not test_mode:
+            try:
+                resp = requests.post(
+                    f"{WP_URL}/wp-json/wp/v2/listing/{existing_id}",
+                    json={"acf": {"senior_place_url": url}},
+                    auth=HTTPBasicAuth(WP_USER, WP_PASS),
+                    timeout=30,
+                )
+                if resp.status_code == 200:
+                    print(f"🔁 Duplicate detected (title+address). Backfilled senior_place_url into existing ID {existing_id}")
+                    existing["senior_place_url"] = url
+                    wp_urls.add(url)
+                else:
+                    print(f"⚠️  Duplicate detected (title+address) but failed to backfill URL into ID {existing_id}: {resp.status_code}")
+            except Exception as e:
+                print(f"⚠️  Duplicate detected (title+address) but URL backfill failed for ID {existing_id}: {e}")
+
+        return {'status': 'skipped', 'reason': 'duplicate_title_address', 'existing_id': existing_id}
     
     # Prepare post data - CREATE WITHOUT ACF FIRST to avoid auto-publish
     post_data = {
@@ -366,6 +491,16 @@ def create_listing(listing, wp_urls, test_mode=False):
         else:
             print(f"❌ Failed to add ACF fields: {acf_response.status_code}")
 
+        # Update in-memory indexes to prevent duplicates within the same import run
+        if url:
+            wp_urls.add(url)
+        if match_key[0] and match_key[1]:
+            title_address_index[match_key] = {
+                "id": listing_id,
+                "status": "draft",
+                "senior_place_url": url,
+            }
+
         return {
             'status': 'created',
             'id': listing_id,
@@ -410,11 +545,12 @@ def import_csv(csv_file, test_only=False, limit=None, batch_size=25):
         print(f"   {response.text[:200]}")
         sys.exit(1)
     
-    # Get existing URLs (unless test only)
+    # Get existing listings index (unless test only)
     if not test_only:
-        wp_urls = get_existing_urls()
+        wp_urls, title_address_index = get_existing_listing_index()
     else:
         wp_urls = set()
+        title_address_index = {}
         print("⚠️  Test mode: Skipping duplicate check\n")
     
     # Read CSV
@@ -436,7 +572,7 @@ def import_csv(csv_file, test_only=False, limit=None, batch_size=25):
         title = listing['title'][:60]
         print(f"[{i}/{total}] {title}")
         
-        result = create_listing(listing, wp_urls, test_mode=test_only)
+        result = create_listing(listing, wp_urls, title_address_index, test_mode=test_only)
         
         if result['status'] == 'created':
             print(f"  Created: ID {result['id']} - {result['title']}")

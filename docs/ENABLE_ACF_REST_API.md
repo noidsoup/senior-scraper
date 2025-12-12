@@ -26,7 +26,7 @@ After enabling, test with:
 
 ```bash
 curl -s "https://aplaceforseniorscms.kinsta.cloud/wp-json/wp/v2/location/512" \
-  -u "nicholas_editor:E3sK TONb VsB2 DEzh bdBe X6Ug" | \
+  -u "${WP_USER}:${WP_PASS}" | \
   python3 -c "import sys, json; data = json.load(sys.stdin); print('ACF fields:', data.get('acf', {}))"
 ```
 

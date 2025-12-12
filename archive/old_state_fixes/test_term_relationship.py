@@ -7,10 +7,13 @@ The State checkboxes might be a term-to-term relationship, not ACF.
 import requests
 from requests.auth import HTTPBasicAuth
 import json
+import os
 
-base_url = 'https://aplaceforseniorscms.kinsta.cloud'
-username = 'nicholas_editor'
-password = 'E3sK TONb VsB2 DEzh bdBe X6Ug'
+base_url = os.getenv("WP_URL", "https://aplaceforseniorscms.kinsta.cloud").rstrip("/")
+username = os.getenv("WP_USER") or os.getenv("WP_USERNAME") or "nicholas_editor"
+password = os.getenv("WP_PASS") or os.getenv("WP_PASSWORD")
+if not password:
+    raise RuntimeError("Missing WP_PASS/WP_PASSWORD environment variable.")
 auth = HTTPBasicAuth(username, password)
 
 # Get a listing that has both location and state

@@ -157,6 +157,70 @@ async def scrape_state(page, state_code, output_file):
     # Navigate to communities page
     await page.goto("https://app.seniorplace.com/communities")
     await page.wait_for_timeout(3000)
+
+    # Use Location filter with zipcode (simpler and more reliable)
+    print(f"🔍 Applying Location filter for {state_code}...")
+
+    # Zipcodes for each state (major city in each state)
+    zipcode_map = {
+        'AR': '72201',  # Little Rock, AR
+        'CT': '06103',  # Hartford, CT
+        'WY': '82001',  # Cheyenne, WY
+        'AZ': '85001',  # Phoenix, AZ
+        'CA': '90001',  # Los Angeles, CA
+        'CO': '80201',  # Denver, CO
+        'ID': '83701',  # Boise, ID
+        'NM': '87101',  # Albuquerque, NM
+        'UT': '84101'   # Salt Lake City, UT
+    }
+
+    zipcode = zipcode_map.get(state_code)
+    if zipcode:
+        print(f"📍 Using zipcode {zipcode} for {state_code}")
+
+        try:
+            # Wait for page to be ready
+            await page.wait_for_selector('button', timeout=10000)
+            await page.wait_for_timeout(2000)
+
+            # Find Location button (first button in searchbar)
+            searchbar = await page.query_selector('.searchbar-component, form.searchbar-component')
+            if searchbar:
+                location_btn = await searchbar.query_selector('button:first-of-type')
+                if location_btn:
+                    await location_btn.click()
+                    await page.wait_for_timeout(2000)  # Wait for popover
+
+                    # Select "Zip" from first dropdown
+                    first_select = await page.query_selector('select.form-select')
+                    if first_select:
+                        await first_select.select_option('specificZip')
+                        await page.wait_for_timeout(1000)
+
+                    # Enter zipcode
+                    zip_input = await page.query_selector('input[placeholder*="Zip"], input[placeholder*="zip"], input[type="text"]')
+                    if zip_input:
+                        await zip_input.fill(zipcode)
+                        await page.wait_for_timeout(1000)
+
+                        # Click Apply
+                        apply_btn = await page.query_selector('button:has-text("Apply")')
+                        if apply_btn:
+                            await apply_btn.click()
+                            await page.wait_for_timeout(4000)  # Wait for filter to apply
+                            print(f"✅ Filtered to zipcode {zipcode} ({state_code})")
+                        else:
+                            print(f"⚠️ Could not find Apply button")
+                    else:
+                        print(f"⚠️ Could not find Zip input field")
+                else:
+                    print(f"⚠️ Could not find Location button, continuing without filter")
+            else:
+                print(f"⚠️ Could not find searchbar, continuing without filter")
+        except Exception as e:
+            print(f"⚠️ Error applying filter: {e}, continuing without filter")
+    else:
+        print(f"⚠️ No zipcode mapped for {state_code}, skipping filter")
     
     # Skip to resume page if needed
     page_num = 1
