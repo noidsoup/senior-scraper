@@ -45,6 +45,8 @@ monthly_updates/
 data/raw/**
 data/processed/archive/**
 data_outputs/
+outputs/
+samples/
 current_scraped_data/*.csv
 
 # ========================================
